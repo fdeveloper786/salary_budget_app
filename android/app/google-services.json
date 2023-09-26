@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "412855408264",
+    "project_id": "salary-budget-app",
+    "storage_bucket": "salary-budget-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:412855408264:android:bf335e2cd12887c168f13d",
+        "android_client_info": {
+          "package_name": "com.example.salary_budget"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCtXSyTQvD3vL4oMJa94BCAbg6bHvk10yg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
