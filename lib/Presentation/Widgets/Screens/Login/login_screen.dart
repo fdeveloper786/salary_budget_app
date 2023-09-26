@@ -1,3 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:salary_budget/Data/Core/Utils/app_constants.dart';
 import 'package:salary_budget/Data/Core/Utils/app_decoration.dart';
@@ -5,16 +7,42 @@ import 'package:salary_budget/Data/Core/Utils/image_utils.dart';
 import 'package:custom_gradient_button/custom_gradient_button.dart';
 import 'package:salary_budget/Domain/AppRoutes/routes.dart';
 import 'package:salary_budget/Domain/Mixins/form_validation_mixins.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:salary_budget/Presentation/Widgets/Screens/Otp_Screen/otp_validation_screen.dart';
 
-class LoginScreen extends StatelessWidget with InputValidationMixin {
+class LoginScreen extends StatefulWidget with InputValidationMixin {
   LoginScreen({super.key});
 
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController mobileController = TextEditingController();
 
   final TextEditingController otpController = TextEditingController();
 
   final loginFormGlobalKey = GlobalKey<FormState>();
+
+  String phone = "";
+
+  void sendOTP(String countryCode, String mobileNumber) async {
+    if (kDebugMode) {
+      print("number is ${countryCode + mobileNumber}");
+    }
+    await FirebaseAuth.instance.verifyPhoneNumber(
+      phoneNumber: countryCode + mobileNumber,
+      verificationCompleted: (PhoneAuthCredential credential) {},
+      verificationFailed: (FirebaseAuthException e) {},
+      codeSent: (String verificationId, int? resendToken) {},
+      codeAutoRetrievalTimeout: (String verificationId) {},
+    );
+  }
+
+  @override
+  void initState() {
+    mobileController.text = "+91";
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,14 +87,14 @@ class LoginScreen extends StatelessWidget with InputValidationMixin {
                         filled: true,
                         hintStyle: TextStyle(color: Colors.grey[500]),
                       ),
-                      maxLength: 10,
+                      maxLength: 13,
                       validator: (value) {
                         if (value!.isEmpty) {
                           return emptyErrorLbl;
                         } else if (value.length < 10) {
                           return mobileNumberDigitError2Lbl;
                         } else {
-                          isMobileNumberValid(value);
+                          //isMobileNumberValid(value);
                         }
                       },
                     ),
@@ -88,12 +116,24 @@ class LoginScreen extends StatelessWidget with InputValidationMixin {
                 secondColor: Colors.blueAccent,
                 height: 40.0,
                 width: 150.0,
-                method: () {
+                method: () async {
                   if (loginFormGlobalKey.currentState!.validate()) {
                     loginFormGlobalKey.currentState!.save();
-                    //isMobileNumberValid(mobileController.text);
-                    print("if part in login");
-                    Navigator.pushNamed(context, AppRoutes.otpValidationScreen);
+                    if (kDebugMode) {
+                      print(mobileController.text + phone);
+                    }
+                    await FirebaseAuth.instance.verifyPhoneNumber(
+                      phoneNumber: mobileController.text + phone,
+                      verificationCompleted:
+                          (PhoneAuthCredential credential) {},
+                      verificationFailed: (FirebaseAuthException e) {},
+                      codeSent: (String verificationId, int? resendToken) {
+                        OTPValidation.verifyOtp = verificationId;
+                        Navigator.pushNamed(
+                            context, AppRoutes.otpValidationScreen);
+                      },
+                      codeAutoRetrievalTimeout: (String verificationId) {},
+                    );
                   } else {
                     print("else part in login");
                   }

@@ -9,6 +9,7 @@ import 'package:salary_budget/Domain/Mixins/form_validation_mixins.dart';
 
 class OTPValidation extends StatelessWidget with InputValidationMixin {
   OTPValidation({super.key});
+  static String verifyOtp = "";
 
   final TextEditingController otpController = TextEditingController();
 
