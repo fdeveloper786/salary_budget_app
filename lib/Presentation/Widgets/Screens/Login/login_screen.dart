@@ -1,48 +1,19 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
+import 'package:custom_gradient_button/custom_gradient_button.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:salary_budget/Data/Core/Utils/app_constants.dart';
 import 'package:salary_budget/Data/Core/Utils/app_decoration.dart';
 import 'package:salary_budget/Data/Core/Utils/image_utils.dart';
-import 'package:custom_gradient_button/custom_gradient_button.dart';
-import 'package:salary_budget/Domain/AppRoutes/routes.dart';
 import 'package:salary_budget/Domain/Mixins/form_validation_mixins.dart';
+import 'package:salary_budget/Presentation/Widgets/Screens/Login/controller/login_controller.dart';
 import 'package:salary_budget/Presentation/Widgets/Screens/Otp_Screen/otp_validation_screen.dart';
 
-class LoginScreen extends StatefulWidget with InputValidationMixin {
+class LoginScreen extends StatelessWidget with InputValidationMixin {
   LoginScreen({super.key});
 
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController mobileController = TextEditingController();
-
-  final TextEditingController otpController = TextEditingController();
+  final loginController = Get.put(LoginController());
 
   final loginFormGlobalKey = GlobalKey<FormState>();
-
-  String phone = "";
-
-  void sendOTP(String countryCode, String mobileNumber) async {
-    if (kDebugMode) {
-      print("number is ${countryCode + mobileNumber}");
-    }
-    await FirebaseAuth.instance.verifyPhoneNumber(
-      phoneNumber: countryCode + mobileNumber,
-      verificationCompleted: (PhoneAuthCredential credential) {},
-      verificationFailed: (FirebaseAuthException e) {},
-      codeSent: (String verificationId, int? resendToken) {},
-      codeAutoRetrievalTimeout: (String verificationId) {},
-    );
-  }
-
-  @override
-  void initState() {
-    mobileController.text = "+91";
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +45,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       height: 10,
                     ),
                     TextFormField(
-                      controller: mobileController,
+                      controller: loginController.phoneController,
                       keyboardType: TextInputType.number,
                       autofocus: true,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -94,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         } else if (value.length < 10) {
                           return mobileNumberDigitError2Lbl;
                         } else {
-                          //isMobileNumberValid(value);
+                          isMobileNumberValid(value);
                         }
                       },
                     ),
@@ -119,21 +90,11 @@ class _LoginScreenState extends State<LoginScreen> {
                 method: () async {
                   if (loginFormGlobalKey.currentState!.validate()) {
                     loginFormGlobalKey.currentState!.save();
-                    if (kDebugMode) {
-                      print(mobileController.text + phone);
-                    }
-                    await FirebaseAuth.instance.verifyPhoneNumber(
-                      phoneNumber: mobileController.text + phone,
-                      verificationCompleted:
-                          (PhoneAuthCredential credential) {},
-                      verificationFailed: (FirebaseAuthException e) {},
-                      codeSent: (String verificationId, int? resendToken) {
-                        OTPValidation.verifyOtp = verificationId;
-                        Navigator.pushNamed(
-                            context, AppRoutes.otpValidationScreen);
-                      },
-                      codeAutoRetrievalTimeout: (String verificationId) {},
-                    );
+                    print(
+                        "input num ${loginController.phoneController.text.trim()}");
+                    LoginController.instance.phoneAuthentication(
+                        "+91" + loginController.phoneController.text.trim());
+                    Get.to(() => OTPValidation());
                   } else {
                     print("else part in login");
                   }

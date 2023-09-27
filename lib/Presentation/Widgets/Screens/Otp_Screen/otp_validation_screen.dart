@@ -1,19 +1,28 @@
 import 'package:custom_gradient_button/custom_gradient_button.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pinput/pinput.dart';
 import 'package:salary_budget/Data/Core/Utils/app_constants.dart';
 import 'package:salary_budget/Data/Core/Utils/app_decoration.dart';
 import 'package:salary_budget/Data/Core/Utils/image_utils.dart';
-import 'package:salary_budget/Domain/AppRoutes/routes.dart';
 import 'package:salary_budget/Domain/Mixins/form_validation_mixins.dart';
+import 'package:salary_budget/Presentation/Widgets/Screens/OTP_Screen/controller/otp_controller.dart';
 
-class OTPValidation extends StatelessWidget with InputValidationMixin {
-  OTPValidation({super.key});
-  static String verifyOtp = "";
+class OTPValidation extends StatefulWidget with InputValidationMixin {
+  const OTPValidation({super.key});
+
+  @override
+  State<OTPValidation> createState() => _OTPValidationState();
+}
+
+class _OTPValidationState extends State<OTPValidation> {
+  final otpValidationController = Get.put(OTPController());
 
   final TextEditingController otpController = TextEditingController();
 
   final otpFormGlobalKey = GlobalKey<FormState>();
+  var code = "";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,20 +55,12 @@ class OTPValidation extends StatelessWidget with InputValidationMixin {
                     Pinput(
                       length: 6,
                       showCursor: true,
-                      controller: otpController,
+                      //controller: otpController,
                       autofocus: true,
                       keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return otpErrorLbl;
-                        } else if (value.length < 6) {
-                          return otpLengthLbl;
-                        } else {
-                          isValidateOtp(value);
-                        }
-                      },
                       onChanged: (value) {
                         print('otp value is $value');
+                        code = value;
                         //code = value;
                       },
                     ),
@@ -73,25 +74,18 @@ class OTPValidation extends StatelessWidget with InputValidationMixin {
             child: Align(
               alignment: Alignment.bottomCenter,
               child: CustomGradientButton(
-                child: const Text(
-                  validateLbl,
-                  style: AppStyle.txtWhite20,
-                ),
-                firstColor: Colors.greenAccent,
-                secondColor: Colors.blueAccent,
-                height: 40.0,
-                width: 150.0,
-                method: () {
-                  if (otpFormGlobalKey.currentState!.validate()) {
-                    otpFormGlobalKey.currentState!.save();
-                    //isMobileNumberValid(mobileController.text);
-                    print("if part in otp");
-                    Navigator.pushNamed(context, AppRoutes.homeScreen);
-                  } else {
-                    print("else part in otp");
-                  }
-                },
-              ),
+                  child: const Text(
+                    validateLbl,
+                    style: AppStyle.txtWhite20,
+                  ),
+                  firstColor: Colors.greenAccent,
+                  secondColor: Colors.blueAccent,
+                  height: 40.0,
+                  width: 150.0,
+                  method: () async {
+                    otpValidationController.otpVerification(code);
+                    //OTPController.instance.otpVerification(code);
+                  }),
             ),
           ),
         ],
