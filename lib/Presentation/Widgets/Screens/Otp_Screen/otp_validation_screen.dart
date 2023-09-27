@@ -8,19 +8,15 @@ import 'package:salary_budget/Data/Core/Utils/image_utils.dart';
 import 'package:salary_budget/Domain/Mixins/form_validation_mixins.dart';
 import 'package:salary_budget/Presentation/Widgets/Screens/OTP_Screen/controller/otp_controller.dart';
 
-class OTPValidation extends StatefulWidget with InputValidationMixin {
-  const OTPValidation({super.key});
+class OTPValidation extends StatelessWidget with InputValidationMixin {
+  OTPValidation({super.key});
 
-  @override
-  State<OTPValidation> createState() => _OTPValidationState();
-}
-
-class _OTPValidationState extends State<OTPValidation> {
   final otpValidationController = Get.put(OTPController());
 
   final TextEditingController otpController = TextEditingController();
 
   final otpFormGlobalKey = GlobalKey<FormState>();
+
   var code = "";
 
   @override
@@ -58,10 +54,17 @@ class _OTPValidationState extends State<OTPValidation> {
                       //controller: otpController,
                       autofocus: true,
                       keyboardType: TextInputType.number,
+                      validator: (otp_value) {
+                        if (otp_value!.isEmpty) {
+                          return otpErrorLbl;
+                        } else if (otp_value.length < 6) {
+                          return otpLengthLbl;
+                        } else {
+                          isValidateOtp(otp_value);
+                        }
+                      },
                       onChanged: (value) {
-                        print('otp value is $value');
                         code = value;
-                        //code = value;
                       },
                     ),
                   ],
@@ -83,8 +86,7 @@ class _OTPValidationState extends State<OTPValidation> {
                   height: 40.0,
                   width: 150.0,
                   method: () async {
-                    otpValidationController.otpVerification(code);
-                    //OTPController.instance.otpVerification(code);
+                    otpValidationController.otpVerification(code, context);
                   }),
             ),
           ),
