@@ -1,3 +1,7 @@
+
+// -------- SharedPreferences labels -------- //
+const String isLoggedLbl = "isLogged";
+
 const String loginLbl = 'Login';
 const String enterMobileNumberLbl = "Enter Mobile Number";
 const String emptyErrorLbl = 'Please enter mobile number';
@@ -13,6 +17,12 @@ const String inputOtpLbl = "Please input OTP";
 const String validateLbl = "Validate";
 const String otpLengthLbl = "OTP must be 6 digit length.";
 const String otpErrorLbl = "Please enter otp";
+const String errorLbl = "Error";
+const String wrongOtpLbl = "Wrong OTP";
+const String invalidPhoneNumberLbl = "invalid-phone-number";
+const String invalidNumberLbl = "The provided phone number is not valid.";
+const String somethingWentWrongLbl = "Something went wrong. Try again..";
+const String somethingWentWrongWithOtpLbl = "Something went wrong with OTP,please try after 4 hours.";
 
 // -------- Home Screen -------- //
 
