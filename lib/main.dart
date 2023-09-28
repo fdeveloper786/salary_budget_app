@@ -9,7 +9,6 @@ import 'package:salary_budget/Data/Core/Utils/logger.dart';
 import 'package:salary_budget/Domain/AppRoutes/routes.dart';
 import 'package:salary_budget/repository/authenticaion_repository.dart';
 
-
 bool? isLoggedIn;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
