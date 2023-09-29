@@ -15,6 +15,7 @@ class AppRoutes {
   static const String otpValidationScreen = "/otp_validation_screen";
 
   static const String homeScreen = "/home_screen";
+  static const String navBarScreen = "/nav_bar_screen";
 
   static List<GetPage> pages = [
     GetPage(name: loginScreen, page: () => LoginScreen(), bindings: [

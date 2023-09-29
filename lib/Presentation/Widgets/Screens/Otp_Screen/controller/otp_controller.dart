@@ -10,24 +10,26 @@ import 'package:salary_budget/repository/authenticaion_repository.dart';
 class OTPController extends GetxController {
   static OTPController get instance => Get.find();
 
+  var savedMobileNumber = ''.obs;
   // OTP Verification Method
 
-  void otpVerification(String phoneNo, BuildContext context) async {
+  void otpVerification(String otpCode, BuildContext context) async {
     bool? isVerified;
     try {
-      isVerified = await AuthenticationRepository.instance.verifyOTP(phoneNo);
+      isVerified = await AuthenticationRepository.instance.verifyOTP(otpCode);
       print("----- is verified ---- $isVerified");
       if (isVerified != null) {
         WidgetsHelper.onLoadingPage(context);
         Future.delayed(const Duration(seconds: 3), () {
           Navigator.pop(context); //pop dialog
           if (isVerified!) {
-            setSession();
+            savedMobileNumber.value =
+                AuthenticationRepository.instance.phoneNumber.value;
+            setSession(savedMobileNumber.value);
             Get.offAll(HomeScreen());
           } else {
             Get.to(() => LoginScreen());
           }
-          //isVerified! ? Get.offAll(HomeScreen()) : Get.to(()=>LoginScreen());//Get.back();
         });
       } else {
         WidgetsHelper.onLoadingPage(context);
@@ -39,11 +41,10 @@ class OTPController extends GetxController {
       }
     } on FirebaseAuthException catch (e) {
       print("Failed otp $e");
-      // Get.snackbar('Error', 'Wrong OTP..');
     }
   }
 
-  void setSession() async {
-    await AuthenticationRepository.instance.setLoginSession();
+  void setSession([String? phoneNo]) async {
+    await AuthenticationRepository.instance.setLoginSession(phoneNo!);
   }
 }

@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:salary_budget/Data/Core/Utils/app_constants.dart';
+import 'package:salary_budget/Presentation/Widgets/Screens/HomeScreen/controller/home_controller.dart';
 import 'package:salary_budget/Presentation/Widgets/Screens/Login/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,9 +13,12 @@ class AuthenticationRepository extends GetxController {
   late final SharedPreferences prefs;
   RxBool? isLoggedIn = false.obs;
   var isLoggedOut;
+  var phoneNumber = ''.obs;
+  var userMobileNumber = ''.obs;
 
   // OTP Login
   Future<void> phoneAuthentication(String mobileNumber) async {
+    phoneNumber.value = mobileNumber.substring(3);
     await FirebaseAuth.instance.verifyPhoneNumber(
       phoneNumber: mobileNumber,
       verificationCompleted: (credential) async {
@@ -32,7 +36,6 @@ class AuthenticationRepository extends GetxController {
           Get.to(() => LoginScreen());
         } else {
           Get.snackbar(errorLbl, somethingWentWrongLbl);
-          //Get.back();
           Get.to(() => LoginScreen());
         }
       },
@@ -55,31 +58,41 @@ class AuthenticationRepository extends GetxController {
 
   // Check user is logged in o rnot
 
-  Future<void> setLoginSession() async {
-    //prefs = await SharedPreferences.getInstance();
-    var setLogs = await prefs.setBool(isLoggedLbl, true);
-
-    print("setlogs $setLogs");
+  Future<void> setLoginSession(mobileNo) async {
+    await prefs.setBool(isLoggedLbl, true);
+    await prefs.setString('mobile_number', mobileNo);
   }
 
   Future<bool?> isUserLoggedIn() async {
     try {
       prefs = await SharedPreferences.getInstance();
       isLoggedIn!.value = prefs.getBool(isLoggedLbl)!;
-      print("logged in $isLoggedIn");
     } catch (e) {
       print("exception $e");
     }
     return isLoggedIn!.value;
   }
 
+  Future<String> userLoggedNumber() async {
+    try {
+      userMobileNumber.value = prefs.getString('mobile_number')!;
+    } catch (e) {
+      print('ex $e');
+    }
+    return userMobileNumber.value;
+  }
+
   Future<bool?> userLoggedOut() async {
     try {
       isLoggedOut = await prefs.remove(isLoggedLbl);
-      print("logged out $isLoggedOut ${isLoggedOut.runtimeType}");
     } catch (e) {
       print('exception $e');
     }
     return isLoggedOut;
+  }
+
+  Future<bool?> removedUserName() async {
+    bool isRemoved = await prefs.remove('mobile_number');
+    return isRemoved;
   }
 }
