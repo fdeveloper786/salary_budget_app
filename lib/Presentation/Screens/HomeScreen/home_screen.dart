@@ -103,7 +103,6 @@ class HomeScreen extends StatelessWidget {
                                 onTap: () {
                                   Navigator.of(context)
                                       .pushNamed(AppRoutes.addRecordScreen);
-                                  //_showAlertDialog(context);
                                   print('Record added');
                                 },
                               ),

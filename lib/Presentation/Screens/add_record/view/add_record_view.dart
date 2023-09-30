@@ -1,32 +1,15 @@
+import 'package:custom_gradient_button/custom_gradient_button.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:salary_budget/Data/Core/Utils/app_decoration.dart';
+import 'package:salary_budget/Presentation/Screens/add_record/controller/add_record_controller.dart';
 import 'package:salary_budget/Presentation/Widgets/common_widgets/screen_buttons.dart';
 
 class AddRecordScreen extends StatelessWidget {
   AddRecordScreen({super.key});
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final GlobalKey<FormState> _salaryFormKey = GlobalKey<FormState>();
-  final salaryController = TextEditingController();
-  String _name = '';
-  String _email = '';
-  bool? isVisible = false;
 
-  // Form submission function
-  void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      // Process form data here, e.g., send it to a server
-      print('Name: $_name');
-      print('Email: $_email');
-    }
-  }
-
-  void _submitSalaryForm() {
-    if (_salaryFormKey.currentState!.validate()) {
-      _salaryFormKey.currentState!.save();
-      salaryController.clear();
-      isVisible = true;
-    }
-  }
+  final addRecordController = Get.put(AddRecordController());
 
   @override
   Widget build(BuildContext context) {
@@ -34,18 +17,40 @@ class AddRecordScreen extends StatelessWidget {
         appBar: AppBar(
           title: Text('Add Record'),
         ),
-        body: SingleChildScrollView(
-          child: Column(
-            children: [
-              addReceivedSalary(),
-            ],
-          ),
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.grey,
+                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(20))),
+                  child: Column(
+                    children: [
+                      addReceivedSalary(),
+                      addRecordForm(context),
+                      Center(
+                        child: ScreenButtons(
+                            btnLabel: "Add Record",
+                            onTap: () {
+                              addRecordController.submitRecordForm();
+                            }),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
         ));
   }
 
   Widget addReceivedSalary() {
     return Form(
-        key: _salaryFormKey,
+        key: addRecordController.addSalaryFormKey,
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
@@ -54,19 +59,32 @@ class AddRecordScreen extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    Expanded(
-                      flex: 6,
+                    Flexible(
                       child: TextFormField(
-                        keyboardType: TextInputType.number,
-                        controller: salaryController,
+                        keyboardType: TextInputType.text,
+                        controller: addRecordController.monthController,
                         autovalidateMode: AutovalidateMode.onUserInteraction,
+                        readOnly: true,
                         decoration: InputDecoration(
-                          labelText: 'Enter month salary',
+                          labelText: 'Select month',
+                          suffixIcon: PopupMenuButton<String>(
+                            icon: const Icon(Icons.arrow_drop_down),
+                            onSelected: (String value) {
+                              addRecordController.monthController.text = value;
+                            },
+                            itemBuilder: (BuildContext context) {
+                              return addRecordController.monthList
+                                  .map<PopupMenuItem<String>>((String value) {
+                                return new PopupMenuItem(
+                                    child: Text(value), value: value);
+                              }).toList();
+                            },
+                          ),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 10),
                           border: OutlineInputBorder(
                             borderRadius: const BorderRadius.all(
-                              const Radius.circular(20.0),
+                              const Radius.circular(10.0),
                             ),
                             borderSide: BorderSide(
                               width: 1,
@@ -76,45 +94,106 @@ class AddRecordScreen extends StatelessWidget {
                         ),
                         validator: (value) {
                           if (value!.isEmpty) {
-                            return 'Please enter your received salary';
+                            return 'Please select month!';
                           }
                           return null;
                         },
-                        onChanged: (value) {
-                          print("salary $value");
-                        },
-                        onSaved: (value) {
-                          _name = value!;
-                        },
+                        onChanged: (value) {},
                       ),
                     ),
                     const SizedBox(
                       width: 10,
                     ),
-                    Expanded(
-                      flex: 1,
-                      child: ClipOval(
-                        child: Material(
-                          color: Colors.blue, // Button color
-                          child: InkWell(
-                            splashColor: Colors.red, // Splash color
-                            onTap: () {
-                              print("salary inputed ${salaryController.text}");
-                              _submitSalaryForm();
+                    Flexible(
+                      child: TextFormField(
+                        keyboardType: TextInputType.text,
+                        controller: addRecordController.yearController,
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        readOnly: true,
+                        decoration: InputDecoration(
+                          labelText: 'Select year',
+                          suffixIcon: PopupMenuButton<String>(
+                            icon: const Icon(Icons.arrow_drop_down),
+                            onSelected: (String value) {
+                              addRecordController.yearController.text = value;
                             },
-                            child: SizedBox(
-                                width: 60,
-                                height: 56,
-                                child: Icon(
-                                  Icons.add,
-                                  color: Colors.white,
-                                  size: 30,
-                                )),
+                            itemBuilder: (BuildContext context) {
+                              return addRecordController.yearList
+                                  .map<PopupMenuItem<String>>((String value) {
+                                return PopupMenuItem(
+                                    child: new Text(value), value: value);
+                              }).toList();
+                            },
+                          ),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 15),
+                          border: OutlineInputBorder(
+                            borderRadius: const BorderRadius.all(
+                              const Radius.circular(10.0),
+                            ),
+                            borderSide: BorderSide(
+                              width: 1,
+                              style: BorderStyle.none,
+                            ),
                           ),
                         ),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please select year!';
+                          }
+                          return null;
+                        },
+                        onChanged: (value) {},
                       ),
-                    )
+                    ),
                   ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  keyboardType: TextInputType.number,
+                  controller: addRecordController.salaryController,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  decoration: InputDecoration(
+                    labelText: 'Enter month salary',
+                    suffixIcon: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: CustomGradientButton(
+                        child: Text(
+                          'Add',
+                          style: AppStyle.txtWhite15,
+                        ),
+                        height: 20.0,
+                        width: 40.0,
+                        firstColor: Colors.greenAccent,
+                        secondColor: Colors.blueAccent,
+                        method: () {
+                          addRecordController.submitSalaryForm(
+                              addRecordController.yearController.text,
+                              addRecordController.monthController.text);
+                        },
+                      ),
+                    ),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    border: OutlineInputBorder(
+                      borderRadius: const BorderRadius.all(
+                        const Radius.circular(10.0),
+                      ),
+                      borderSide: BorderSide(
+                        width: 1,
+                        style: BorderStyle.none,
+                      ),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter your received salary';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {
+                    print("salary $value");
+                  },
                 ),
               ),
             ],
@@ -122,45 +201,249 @@ class AddRecordScreen extends StatelessWidget {
         ));
   }
 
-  Widget addRecordForm() {
-    return Form(
-        key: _formKey,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Name'),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter your name';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  _name = value!;
-                },
-              ),
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Email'),
-                validator: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter your email';
-                  }
-                  // You can add more email validation logic here
-                  return null;
-                },
-                onSaved: (value) {
-                  _email = value!;
-                },
-              ),
-              SizedBox(height: 16),
-              Center(
-                  child: ScreenButtons(
-                      btnLabel: "Add Record", onTap: _submitForm)),
-            ],
-          ),
-        ));
+  Widget addRecordForm([BuildContext? ctx]) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Form(
+          key: addRecordController.addRecordFormKey,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                // Expensed Amount
+                TextFormField(
+                  keyboardType: TextInputType.number,
+                  controller: addRecordController.expAmountController,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  decoration: InputDecoration(
+                    labelText: 'Expensed amount',
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    border: OutlineInputBorder(
+                      borderRadius: const BorderRadius.all(
+                        const Radius.circular(10.0),
+                      ),
+                      borderSide: BorderSide(
+                        width: 1,
+                        style: BorderStyle.none,
+                      ),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter your expense amount!';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {},
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                // Expensed Type
+                TextFormField(
+                  keyboardType: TextInputType.text,
+                  controller: addRecordController.expTypeController,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    labelText: 'Expensed type',
+                    suffixIcon: PopupMenuButton<String>(
+                      icon: const Icon(Icons.arrow_drop_down),
+                      onSelected: (String value) {
+                        addRecordController.expTypeController.text = value;
+                      },
+                      itemBuilder: (BuildContext context) {
+                        return addRecordController.expTypeList
+                            .map<PopupMenuItem<String>>((String value) {
+                          return new PopupMenuItem(
+                              child: new Text(value), value: value);
+                        }).toList();
+                      },
+                    ),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    border: OutlineInputBorder(
+                      borderRadius: const BorderRadius.all(
+                        const Radius.circular(10.0),
+                      ),
+                      borderSide: BorderSide(
+                        width: 1,
+                        style: BorderStyle.none,
+                      ),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter your expense type!';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {},
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                // Expensed Date
+                TextFormField(
+                  keyboardType: TextInputType.datetime,
+                  controller: addRecordController.expDateController,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    labelText: 'Expensed Date',
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    suffixIcon: Icon(Icons.calendar_month_rounded),
+                    border: OutlineInputBorder(
+                      borderRadius: const BorderRadius.all(
+                        const Radius.circular(10.0),
+                      ),
+                      borderSide: BorderSide(
+                        width: 1,
+                        style: BorderStyle.none,
+                      ),
+                    ),
+                  ),
+                  onTap: () async {
+                    await showDatePicker(
+                            context: ctx!,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(2023),
+                            lastDate: DateTime(2099))
+                        .then((selectedDate) {
+                      if (selectedDate != null) {
+                        addRecordController.expDateController.text =
+                            DateFormat('dd-MM-yyyy').format(selectedDate);
+                      }
+                    });
+                  },
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter your expensed date!';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {},
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                // Expensed Particular
+                TextFormField(
+                  keyboardType: TextInputType.text,
+                  controller: addRecordController.expParticularController,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  decoration: InputDecoration(
+                    labelText: 'Expensed Particular',
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    border: OutlineInputBorder(
+                      borderRadius: const BorderRadius.all(
+                        const Radius.circular(10.0),
+                      ),
+                      borderSide: BorderSide(
+                        width: 1,
+                        style: BorderStyle.none,
+                      ),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter your expensed particular';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {},
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                // Payment Date
+                TextFormField(
+                  keyboardType: TextInputType.datetime,
+                  controller: addRecordController.payDateController,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    labelText: 'Payment Date',
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    suffixIcon: Icon(Icons.calendar_month_rounded),
+                    border: OutlineInputBorder(
+                      borderRadius: const BorderRadius.all(
+                        const Radius.circular(10.0),
+                      ),
+                      borderSide: BorderSide(
+                        width: 1,
+                        style: BorderStyle.none,
+                      ),
+                    ),
+                  ),
+                  onTap: () async {
+                    await showDatePicker(
+                            context: ctx!,
+                            initialDate: DateTime.now(),
+                            firstDate: DateTime(2023),
+                            lastDate: DateTime(2099))
+                        .then((selectedDate) {
+                      if (selectedDate != null) {
+                        addRecordController.payDateController.text =
+                            DateFormat('dd-MM-yyyy').format(selectedDate);
+                      }
+                    });
+                  },
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter your payment date!';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {},
+                ),
+                const SizedBox(
+                  height: 10,
+                ),
+                // Payment Status
+                TextFormField(
+                  keyboardType: TextInputType.text,
+                  controller: addRecordController.payStatusController,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
+                  readOnly: true,
+                  decoration: InputDecoration(
+                    labelText: 'Payment Status',
+                    suffixIcon: PopupMenuButton<String>(
+                      icon: const Icon(Icons.arrow_drop_down),
+                      onSelected: (String value) {
+                        addRecordController.payStatusController.text = value;
+                      },
+                      itemBuilder: (BuildContext context) {
+                        return addRecordController.paymentStatusList
+                            .map<PopupMenuItem<String>>((String value) {
+                          return new PopupMenuItem(
+                              child: new Text(value), value: value);
+                        }).toList();
+                      },
+                    ),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    border: OutlineInputBorder(
+                      borderRadius: const BorderRadius.all(
+                        const Radius.circular(10.0),
+                      ),
+                      borderSide: BorderSide(
+                        width: 1,
+                        style: BorderStyle.none,
+                      ),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter your payment status!';
+                    }
+                    return null;
+                  },
+                  onChanged: (value) {},
+                ),
+                SizedBox(height: 16),
+              ],
+            ),
+          )),
+    );
   }
 }

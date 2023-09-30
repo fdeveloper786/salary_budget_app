@@ -55,22 +55,26 @@ class HomeController extends GetxController {
   String greetingsMessage() {
     if (currentTime <= 12) {
       greetingsMsg.value = "Good Morning\t";
-    } else if ((currentTime > 12) && (currentTime <= 17)) {
+    } else if ((currentTime > 12) && (currentTime <= 16)) {
       greetingsMsg.value = "Good Afternoon\t";
-    } else if ((currentTime > 17) && (currentTime <= 20)) {
+    } else if ((currentTime > 16) && (currentTime <= 24)) {
       greetingsMsg.value = "Good Evening\t";
-    } else {
+    } /*else if ((currentTime > 20) && (currentTime <= )){
       greetingsMsg.value = "Good Night\t";
-    }
+    }*/
     return greetingsMsg.value;
   }
 
   String getCurrentMonthName() {
     final now = DateTime.now();
-    final formatter = DateFormat.MMMM(); // Use 'MMMM' for the full month name or 'MMM' for the abbreviated name
+    final formatter = DateFormat
+        .MMMM(); // Use 'MMMM' for the full month name or 'MMM' for the abbreviated name
     final monthName = formatter.format(now);
     print("monthname $monthName");
     currentMonthName.value = monthName;
     return currentMonthName.value;
+  }
+  createDb() async {
+
   }
 }
