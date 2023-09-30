@@ -6,11 +6,9 @@ import 'package:salary_budget/Data/Core/Utils/app_constants.dart';
 import 'package:salary_budget/Data/Core/Utils/app_decoration.dart';
 import 'package:salary_budget/Data/Core/Utils/image_utils.dart';
 import 'package:salary_budget/Domain/Mixins/form_validation_mixins.dart';
-import 'package:salary_budget/Presentation/Widgets/Screens/HomeScreen/home_screen.dart';
-import 'package:salary_budget/Presentation/Widgets/Screens/Login/controller/login_controller.dart';
-import 'package:salary_budget/Presentation/Widgets/Screens/Otp_Screen/otp_validation_screen.dart';
+import 'package:salary_budget/Presentation/Screens/Login/controller/login_controller.dart';
+import 'package:salary_budget/Presentation/Screens/Otp_Screen/otp_validation_screen.dart';
 import 'package:salary_budget/Presentation/Widgets/common_widgets/common_widgets.dart';
-import 'package:salary_budget/repository/authenticaion_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatelessWidget with InputValidationMixin {

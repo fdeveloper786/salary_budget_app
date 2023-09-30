@@ -6,7 +6,7 @@ import 'package:salary_budget/Data/Core/Utils/app_constants.dart';
 import 'package:salary_budget/Data/Core/Utils/app_decoration.dart';
 import 'package:salary_budget/Data/Core/Utils/image_utils.dart';
 import 'package:salary_budget/Domain/Mixins/form_validation_mixins.dart';
-import 'package:salary_budget/Presentation/Widgets/Screens/OTP_Screen/controller/otp_controller.dart';
+import 'package:salary_budget/Presentation/Screens/Otp_Screen/controller/otp_controller.dart';
 
 class OTPValidation extends StatelessWidget with InputValidationMixin {
   OTPValidation({super.key});

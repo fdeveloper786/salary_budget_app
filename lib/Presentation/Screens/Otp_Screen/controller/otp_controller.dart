@@ -2,8 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:salary_budget/Data/Core/Utils/app_constants.dart';
-import 'package:salary_budget/Presentation/Widgets/Screens/HomeScreen/home_screen.dart';
-import 'package:salary_budget/Presentation/Widgets/Screens/Login/login_screen.dart';
+import 'package:salary_budget/Presentation/Screens/HomeScreen/home_screen.dart';
+import 'package:salary_budget/Presentation/Screens/Login/login_screen.dart';
 import 'package:salary_budget/Presentation/Widgets/common_widgets/common_widgets.dart';
 import 'package:salary_budget/repository/authenticaion_repository.dart';
 

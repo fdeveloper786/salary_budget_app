@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
+import 'package:salary_budget/Data/Core/Utils/app_constants.dart';
 import 'package:salary_budget/Data/Core/Utils/initial_bindings.dart';
 import 'package:salary_budget/Data/Core/Utils/logger.dart';
 import 'package:salary_budget/Domain/AppRoutes/routes.dart';
@@ -12,8 +13,22 @@ import 'package:salary_budget/repository/authenticaion_repository.dart';
 bool? isLoggedIn;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp()
-      .then((value) => Get.put(AuthenticationRepository()));
+  if (kIsWeb) {
+    await Firebase.initializeApp(
+        options: FirebaseOptions(
+      apiKey: apiKey,
+      authDomain: authDomain,
+      projectId: projectId,
+      storageBucket: storageBucketId,
+      messagingSenderId: messageSenderId,
+      appId: appId,
+      measurementId: measurementId,
+    )).then((value) => Get.put(AuthenticationRepository()));
+  } else {
+    await Firebase.initializeApp()
+        .then((value) => Get.put(AuthenticationRepository()));
+  }
+
   isLoggedIn = await AuthenticationRepository.instance.isUserLoggedIn();
   print('is user logged in ${isLoggedIn}');
   SystemChrome.setPreferredOrientations([

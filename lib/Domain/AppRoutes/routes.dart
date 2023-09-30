@@ -1,11 +1,12 @@
 import 'package:get/get.dart';
-import 'package:salary_budget/Presentation/Widgets/Screens/HomeScreen/binding/home_binding.dart';
-import 'package:salary_budget/Presentation/Widgets/Screens/HomeScreen/home_screen.dart';
-import 'package:salary_budget/Presentation/Widgets/Screens/Login/binding/login_binding.dart';
-import 'package:salary_budget/Presentation/Widgets/Screens/Login/login_screen.dart';
-import 'package:salary_budget/Presentation/Widgets/Screens/OTP_Screen/binding/otp_binding.dart';
-import 'package:salary_budget/Presentation/Widgets/Screens/OTP_Screen/otp_validation_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:salary_budget/Presentation/Screens/HomeScreen/binding/home_binding.dart';
+import 'package:salary_budget/Presentation/Screens/HomeScreen/home_screen.dart';
+import 'package:salary_budget/Presentation/Screens/Login/binding/login_binding.dart';
+import 'package:salary_budget/Presentation/Screens/Login/login_screen.dart';
+import 'package:salary_budget/Presentation/Screens/Otp_Screen/binding/otp_binding.dart';
+import 'package:salary_budget/Presentation/Screens/Otp_Screen/otp_validation_screen.dart';
+import 'package:salary_budget/Presentation/Screens/add_record/binding/add_record_binding.dart';
+import 'package:salary_budget/Presentation/Screens/add_record/view/add_record_view.dart';
 
 class AppRoutes {
   static const String initialRoute = "/initialRoute";
@@ -15,7 +16,8 @@ class AppRoutes {
   static const String otpValidationScreen = "/otp_validation_screen";
 
   static const String homeScreen = "/home_screen";
-  static const String navBarScreen = "/nav_bar_screen";
+
+  static const String addRecordScreen = '/add_record_view';
 
   static List<GetPage> pages = [
     GetPage(name: loginScreen, page: () => LoginScreen(), bindings: [
@@ -29,6 +31,9 @@ class AppRoutes {
     ]),
     GetPage(name: homeScreen, page: () => HomeScreen(), bindings: [
       HomeScreenBinding(),
+    ]),
+    GetPage(name: addRecordScreen, page: () => AddRecordScreen(), bindings: [
+      AddRecordScreenBinding(),
     ]),
   ];
 }

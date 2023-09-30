@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:salary_budget/Data/Core/Utils/app_constants.dart';
-import 'package:salary_budget/Presentation/Widgets/Screens/HomeScreen/controller/home_controller.dart';
-import 'package:salary_budget/Presentation/Widgets/Screens/Login/login_screen.dart';
+import 'package:salary_budget/Presentation/Screens/Login/login_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthenticationRepository extends GetxController {

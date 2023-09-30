@@ -1,4 +1,3 @@
-
 // -------- SharedPreferences labels -------- //
 const String isLoggedLbl = "isLogged";
 
@@ -22,8 +21,18 @@ const String wrongOtpLbl = "Wrong OTP";
 const String invalidPhoneNumberLbl = "invalid-phone-number";
 const String invalidNumberLbl = "The provided phone number is not valid.";
 const String somethingWentWrongLbl = "Something went wrong. Try again..";
-const String somethingWentWrongWithOtpLbl = "Something went wrong with OTP,please try after 4 hours.";
+const String somethingWentWrongWithOtpLbl =
+    "Something went wrong with OTP,please try after 4 hours.";
 
 // -------- Home Screen -------- //
 
 const String homeScreenTitleLbl = "Home";
+
+// -------- Firebase API Keys -------- //
+const String apiKey = "AIzaSyBDPY4R3YsnHdLVCPOMKwInQz6h_Ld0YcQ";
+const String authDomain = "salary-budget-app.firebaseapp.com";
+const String projectId = "salary-budget-app";
+const String storageBucketId = "salary-budget-app.appspot.com";
+const String messageSenderId = "412855408264";
+const String appId = "1:412855408264:web:4b49a536ca5f825368f13d";
+const String measurementId = "G-RECGZ6224P";

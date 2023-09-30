@@ -17,8 +17,8 @@ class AppStyle {
   );
 
   static const TextStyle txtWhite20 = const TextStyle(
-      color: Colors.white70,
+      color: Colors.white,
       fontSize: 20,
-      fontWeight: FontWeight.w600
+      fontWeight: FontWeight.w700
   );
 }
