@@ -112,6 +112,7 @@ class HomeScreen extends StatelessWidget {
                                 btnLabel: "View Record",
                                 onTap: () {
                                   print('Record view');
+                                  Navigator.of(context).pushNamed(AppRoutes.viewRecordScreen);
                                 },
                               ),
                             ),

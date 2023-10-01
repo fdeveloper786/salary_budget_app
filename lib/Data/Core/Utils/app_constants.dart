@@ -36,3 +36,9 @@ const String storageBucketId = "salary-budget-app.appspot.com";
 const String messageSenderId = "412855408264";
 const String appId = "1:412855408264:web:4b49a536ca5f825368f13d";
 const String measurementId = "G-RECGZ6224P";
+
+// -------- Error Labels -------- //
+const String montYearErrorLbl = "Please enter month salary first with selection of month and year!";
+const String monthYearExistanceErrorLbl = "Sorry ! this month & year does not exist in our record. Please create first.";
+const String monthlySalaryAddedLbl = "Monthly salary added sucessfully.";
+const String recordAddedLbl = "1 Record added successfully.";
