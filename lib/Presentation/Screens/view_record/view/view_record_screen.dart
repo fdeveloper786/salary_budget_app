@@ -28,7 +28,7 @@ class _ViewRecordScreenState extends State<ViewRecordScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Firestore Data Table View'),
+          title: Text('Salary Budget Record View'),
         ),
         body: StreamBuilder<QuerySnapshot>(
           stream: _dataStream,
