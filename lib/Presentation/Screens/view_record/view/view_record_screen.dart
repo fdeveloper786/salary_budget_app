@@ -70,8 +70,8 @@ class _ViewRecordScreenState extends State<ViewRecordScreen> {
                   DataCell(Text(data['expensed_date'])),
                   DataCell(Text(data['expensed_particular'])),
                   DataCell(Text(data['expensed_type'])),
-                  DataCell(Text(data['expensed_date'])),
-                  DataCell(Text(data['expensed_status'])),
+                  DataCell(Text(data['payment_date'])),
+                  DataCell(Text(data['payment_status'])),
                 ]);
               }).toList(),
             );
