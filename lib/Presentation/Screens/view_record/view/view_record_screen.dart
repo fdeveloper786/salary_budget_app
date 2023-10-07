@@ -8,6 +8,8 @@ class ViewRecordScreen extends StatefulWidget {
 }
 
 class _ViewRecordScreenState extends State<ViewRecordScreen> {
+
+
   CollectionReference users = FirebaseFirestore.instance
       .collection('salary_data')
       .doc('7493008905')
@@ -41,22 +43,22 @@ class _ViewRecordScreenState extends State<ViewRecordScreen> {
             return DataTable(
               columns: [
                 DataColumn(
-                  label: Text('Col1'),
+                  label: Text('Expended Amount'),
                 ),
                 DataColumn(
-                  label: Text('Col2'),
+                  label: Text('Expended Date'),
                 ),
                 DataColumn(
-                  label: Text('Col1'),
+                  label: Text('Expended Particular'),
                 ),
                 DataColumn(
-                  label: Text('Col2'),
+                  label: Text('Expended Type'),
                 ),
                 DataColumn(
-                  label: Text('Col1'),
+                  label: Text('Payment Date'),
                 ),
                 DataColumn(
-                  label: Text('Col2'),
+                  label: Text('Payment Status'),
                 ),
               ],
               rows: documents.map((document) {
@@ -64,12 +66,12 @@ class _ViewRecordScreenState extends State<ViewRecordScreen> {
                     document.data() as Map<String, dynamic>;
 
                 return DataRow(cells: [
-                  DataCell(Text(data['expensed_particular'])),
+                  DataCell(Text(data['expensed_amount'])),
                   DataCell(Text(data['expensed_date'])),
                   DataCell(Text(data['expensed_particular'])),
+                  DataCell(Text(data['expensed_type'])),
                   DataCell(Text(data['expensed_date'])),
-                  DataCell(Text(data['expensed_particular'])),
-                  DataCell(Text(data['expensed_date'])),
+                  DataCell(Text(data['expensed_status'])),
                 ]);
               }).toList(),
             );
