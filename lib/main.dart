@@ -4,16 +4,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
+import 'package:salary_budget/Data/Core/Utils/app_constants.dart';
 import 'package:salary_budget/Data/Core/Utils/initial_bindings.dart';
 import 'package:salary_budget/Data/Core/Utils/logger.dart';
 import 'package:salary_budget/Domain/AppRoutes/routes.dart';
 import 'package:salary_budget/repository/authenticaion_repository.dart';
 
+bool? isLoggedIn;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp()
-      .then((value) => Get.put(AuthenticationRepository()));
+  if (kIsWeb) {
+    await Firebase.initializeApp(
+        options: FirebaseOptions(
+      apiKey: apiKey,
+      authDomain: authDomain,
+      projectId: projectId,
+      storageBucket: storageBucketId,
+      messagingSenderId: messageSenderId,
+      appId: appId,
+      measurementId: measurementId,
+    )).then((value) => Get.put(AuthenticationRepository()));
+  } else {
+    await Firebase.initializeApp()
+        .then((value) => Get.put(AuthenticationRepository()));
+  }
+
+  isLoggedIn = await AuthenticationRepository.instance.isUserLoggedIn();
+  print('is user logged in ${isLoggedIn}');
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]).then((value) {
@@ -23,8 +40,19 @@ void main() async {
   });
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   MyApp({super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +64,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       initialBinding: InitialBindings(),
-      initialRoute: AppRoutes.initialRoute,
+      initialRoute: isLoggedIn! ? AppRoutes.homeScreen : AppRoutes.initialRoute,
       getPages: AppRoutes.pages,
     );
   }

@@ -6,9 +6,10 @@ import 'package:salary_budget/Data/Core/Utils/app_constants.dart';
 import 'package:salary_budget/Data/Core/Utils/app_decoration.dart';
 import 'package:salary_budget/Data/Core/Utils/image_utils.dart';
 import 'package:salary_budget/Domain/Mixins/form_validation_mixins.dart';
-import 'package:salary_budget/Presentation/Widgets/Screens/Login/controller/login_controller.dart';
-import 'package:salary_budget/Presentation/Widgets/Screens/Otp_Screen/otp_validation_screen.dart';
+import 'package:salary_budget/Presentation/Screens/Login/controller/login_controller.dart';
+import 'package:salary_budget/Presentation/Screens/Otp_Screen/otp_validation_screen.dart';
 import 'package:salary_budget/Presentation/Widgets/common_widgets/common_widgets.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatelessWidget with InputValidationMixin {
   LoginScreen({super.key});
@@ -16,6 +17,8 @@ class LoginScreen extends StatelessWidget with InputValidationMixin {
   final loginController = Get.put(LoginController());
 
   final loginFormGlobalKey = GlobalKey<FormState>();
+  late final SharedPreferences prefs;
+  dynamic setLogs;
 
   @override
   Widget build(BuildContext context) {
@@ -101,11 +104,10 @@ class LoginScreen extends StatelessWidget with InputValidationMixin {
                 method: () async {
                   if (loginFormGlobalKey.currentState!.validate()) {
                     loginFormGlobalKey.currentState!.save();
-                    print(
-                        "input num ${loginController.phoneController.text.trim()}");
-                    LoginController.instance.phoneAuthentication(
+                    loginController.phoneAuthentication(
                         "+91" + loginController.phoneController.text.trim());
                     WidgetsHelper.onLoadingPage(context);
+                    //AuthenticationRepository.instance.setLoggedInSession();
                     Future.delayed(const Duration(seconds: 2), () {
                       Navigator.pop(context); //pop dialog
                       Get.to(() => OTPValidation());
