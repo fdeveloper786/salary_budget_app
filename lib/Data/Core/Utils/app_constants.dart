@@ -39,6 +39,6 @@ const String measurementId = "G-RECGZ6224P";
 
 // -------- Error Labels -------- //
 const String montYearErrorLbl = "Please enter month salary first with selection of month and year!";
-const String monthYearExistanceErrorLbl = "Sorry ! this month & year does not exist in our record. Please create first.";
+const String monthYearExistanceErrorLbl = "Sorry ! this month & year does not exist in our record.Please add income first.";
 const String monthlySalaryAddedLbl = "Monthly salary added sucessfully.";
 const String recordAddedLbl = "1 Record added successfully.";

@@ -1,0 +1,20 @@
+// Add Record Scenario
+
+1. Click on Add Record
+2. Select Radio button 
+ a. Current Year (2023)
+ b. Previous Date
+  if select a then ....
+   i. Year will disable
+   ii. Only month can be change
+   iii. If select one month ,
+   	then...
+   	a. Add firstly monthly income and after adding month income it will show "Your Jan month income INR 89,300.00".
+   	b If already selected jan and user wants to add more data then it will show your current income.and user will go to add expenses.   iv. If select another month, then need to add monthly income firstly..and follow step a,b.
+ b. If user will select previus date then...
+ 	i. Select year firstly..
+ 	ii. Select month
+ 	iii. Input Monthly income
+ 		a. If inputted income and then follow step iii of a and b..
+ 	1. IF user will select different year and add dynamically..
+ 		
