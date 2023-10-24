@@ -118,10 +118,9 @@ class CurrentIncomeCalendar extends StatelessWidget {
                           controller:
                               currentDateController.currentSalaryController,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
-                          enabled: currentDateController
-                              .isCurrentSalaryEnteredEnabled.value,
+                          enabled: true,
                           decoration: InputDecoration(
-                            labelText: 'Enter month salary',
+                            labelText: 'Enter month income',
                             suffixIcon: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: CustomGradientButton(
@@ -160,7 +159,7 @@ class CurrentIncomeCalendar extends StatelessWidget {
                           ),
                           validator: (value) {
                             if (value!.isEmpty) {
-                              return 'Please enter your received salary';
+                              return 'Please enter your income';
                             }
                             return null;
                           },

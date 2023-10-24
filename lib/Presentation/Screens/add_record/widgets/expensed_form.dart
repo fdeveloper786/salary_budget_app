@@ -1,0 +1,348 @@
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:salary_budget/Presentation/Screens/add_record/controller/add_record_controller.dart';
+import 'package:salary_budget/Presentation/Widgets/common_widgets/screen_buttons.dart';
+
+class ExpensesForm extends StatelessWidget {
+  final AddRecordController controller;
+  final String collectionName;
+  final TextEditingController monthCollectionName;
+  final TextEditingController yearDocName;
+  final GlobalKey<FormState> formKey;
+  final TextEditingController expAmntController;
+  final TextEditingController expTypeController;
+  final TextEditingController expDateController;
+  final TextEditingController expPartController;
+  final TextEditingController expPayDateController;
+  final TextEditingController expStatusController;
+  BuildContext? ctx;
+
+  ExpensesForm(
+      {super.key,
+      required this.controller,
+      required this.collectionName,
+      required this.monthCollectionName,
+      required this.yearDocName,
+      required this.formKey,
+      required this.expAmntController,
+      required this.expTypeController,
+      required this.expDateController,
+      required this.expPartController,
+      required this.expPayDateController,
+      required this.expStatusController,
+      this.ctx});
+
+  @override
+  Widget build(BuildContext context) {
+    return Obx(() {
+      return Visibility(
+        visible: controller.fieldValue.value.isEmpty ? false : true,
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            children: [
+              Form(
+                  key: formKey,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        // Expensed Amount
+                        TextFormField(
+                          keyboardType: TextInputType.number,
+                          controller: expAmntController,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          decoration: InputDecoration(
+                            labelText: 'Expensed amount',
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 10),
+                            border: OutlineInputBorder(
+                              borderRadius: const BorderRadius.all(
+                                const Radius.circular(10.0),
+                              ),
+                              borderSide: BorderSide(
+                                width: 1,
+                                style: BorderStyle.none,
+                              ),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter your expense amount!';
+                            }
+                            return null;
+                          },
+                          onChanged: (value) {},
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        // Expensed Type
+                        TextFormField(
+                          keyboardType: TextInputType.text,
+                          controller: expTypeController,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          readOnly: true,
+                          decoration: InputDecoration(
+                            labelText: 'Expensed type',
+                            suffixIcon: PopupMenuButton<String>(
+                              icon: const Icon(Icons.arrow_drop_down),
+                              onSelected: (String value) {
+                                expTypeController.text = value;
+                              },
+                              itemBuilder: (BuildContext context) {
+                                return controller.expTypeList
+                                    .map<PopupMenuItem<String>>((String value) {
+                                  return new PopupMenuItem(
+                                      child: new Text(value), value: value);
+                                }).toList();
+                              },
+                            ),
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 10),
+                            border: OutlineInputBorder(
+                              borderRadius: const BorderRadius.all(
+                                const Radius.circular(10.0),
+                              ),
+                              borderSide: BorderSide(
+                                width: 1,
+                                style: BorderStyle.none,
+                              ),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter your expense type!';
+                            }
+                            return null;
+                          },
+                          onChanged: (value) {},
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        // Expensed Date
+                        TextFormField(
+                          keyboardType: TextInputType.datetime,
+                          controller: expDateController,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          readOnly: true,
+                          decoration: InputDecoration(
+                            labelText: 'Expensed Date',
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 10),
+                            suffixIcon: Icon(Icons.calendar_month_rounded),
+                            border: OutlineInputBorder(
+                              borderRadius: const BorderRadius.all(
+                                const Radius.circular(10.0),
+                              ),
+                              borderSide: BorderSide(
+                                width: 1,
+                                style: BorderStyle.none,
+                              ),
+                            ),
+                          ),
+                          onTap: () async {
+                            controller.selectedRadio.value == 0
+                                ? await showDatePicker(
+                                        context: ctx!,
+                                        initialDate: DateTime.now(),
+                                        firstDate: DateTime(2023),
+                                        lastDate: DateTime(2024))
+                                    .then((selectedDate) {
+                                    if (selectedDate != null) {
+                                      expDateController.text =
+                                          DateFormat('dd-MM-yyyy')
+                                              .format(selectedDate);
+                                    }
+                                  })
+                                : await showDatePicker(
+                                        context: ctx!,
+                                        initialDate: DateTime(2018),
+                                        firstDate: DateTime(2018),
+                                        lastDate: DateTime(2022))
+                                    .then((selectedDate) {
+                                    if (selectedDate != null) {
+                                      expDateController.text =
+                                          DateFormat('dd-MM-yyyy')
+                                              .format(selectedDate);
+                                    }
+                                  });
+                          },
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter your expensed date!';
+                            }
+                            return null;
+                          },
+                          onChanged: (value) {},
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        // Expensed Particular
+                        TextFormField(
+                          keyboardType: TextInputType.text,
+                          controller: expPartController,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          decoration: InputDecoration(
+                            labelText: 'Expensed Particular',
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 10),
+                            border: OutlineInputBorder(
+                              borderRadius: const BorderRadius.all(
+                                const Radius.circular(10.0),
+                              ),
+                              borderSide: BorderSide(
+                                width: 1,
+                                style: BorderStyle.none,
+                              ),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter your expensed particular';
+                            }
+                            return null;
+                          },
+                          onChanged: (value) {},
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        // Payment Date
+                        TextFormField(
+                          keyboardType: TextInputType.datetime,
+                          controller: expPayDateController,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          readOnly: true,
+                          decoration: InputDecoration(
+                            labelText: 'Payment Date',
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 10),
+                            suffixIcon: Icon(Icons.calendar_month_rounded),
+                            border: OutlineInputBorder(
+                              borderRadius: const BorderRadius.all(
+                                const Radius.circular(10.0),
+                              ),
+                              borderSide: BorderSide(
+                                width: 1,
+                                style: BorderStyle.none,
+                              ),
+                            ),
+                          ),
+                          onTap: () async {
+                            controller.selectedRadio.value == 0
+                                ? await showDatePicker(
+                                        context: ctx!,
+                                        initialDate: DateTime.now(),
+                                        firstDate: DateTime(2023),
+                                        lastDate: DateTime(2024))
+                                    .then((selectedDate) {
+                                    if (selectedDate != null) {
+                                      expPayDateController.text =
+                                          DateFormat('dd-MM-yyyy')
+                                              .format(selectedDate);
+                                    }
+                                  })
+                                : await showDatePicker(
+                                        context: ctx!,
+                                        initialDate: DateTime(2018),
+                                        firstDate: DateTime(2018),
+                                        lastDate: DateTime(2022))
+                                    .then((selectedDate) {
+                                    if (selectedDate != null) {
+                                      expPayDateController.text =
+                                          DateFormat('dd-MM-yyyy')
+                                              .format(selectedDate);
+                                    }
+                                  });
+                          },
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter your payment date!';
+                            }
+                            return null;
+                          },
+                          onChanged: (value) {},
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        // Payment Status
+                        TextFormField(
+                          keyboardType: TextInputType.text,
+                          controller: expStatusController,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          readOnly: true,
+                          decoration: InputDecoration(
+                            labelText: 'Payment Status',
+                            suffixIcon: PopupMenuButton<String>(
+                              icon: const Icon(Icons.arrow_drop_down),
+                              onSelected: (String value) {
+                                expStatusController.text = value;
+                              },
+                              itemBuilder: (BuildContext context) {
+                                return controller.paymentStatusList
+                                    .map<PopupMenuItem<String>>((String value) {
+                                  return new PopupMenuItem(
+                                      child: new Text(value), value: value);
+                                }).toList();
+                              },
+                            ),
+                            contentPadding:
+                                EdgeInsets.symmetric(horizontal: 10),
+                            border: OutlineInputBorder(
+                              borderRadius: const BorderRadius.all(
+                                const Radius.circular(10.0),
+                              ),
+                              borderSide: BorderSide(
+                                width: 1,
+                                style: BorderStyle.none,
+                              ),
+                            ),
+                          ),
+                          validator: (value) {
+                            if (value!.isEmpty) {
+                              return 'Please enter your payment status!';
+                            }
+                            return null;
+                          },
+                          onChanged: (value) {},
+                        ),
+                        SizedBox(height: 16),
+                      ],
+                    ),
+                  )),
+              Obx(() {
+                return Visibility(
+                  visible: controller.fieldValue.value.isEmpty ? false : true,
+                  child: Center(
+                    child: ScreenButtons(
+                        btnLabel: "Add Record",
+                        onTap: () {
+                          controller.submitRecordForm(
+                              context,
+                              collectionName,
+                              monthCollectionName.text,
+                              yearDocName.text,
+                              formKey,
+                              expAmntController.text,
+                              expTypeController.text,
+                              expDateController.text,
+                              expPartController.text,
+                              expPayDateController.text,
+                              expStatusController.text);
+                        }),
+                  ),
+                );
+              }),
+            ],
+          ),
+        ),
+      );
+    });
+  }
+}

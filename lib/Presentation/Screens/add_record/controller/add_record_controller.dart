@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:salary_budget/Data/Core/Utils/app_constants.dart';
 import 'package:salary_budget/Presentation/Widgets/common_widgets/common_widgets.dart';
 import 'package:salary_budget/repository/authenticaion_repository.dart';
+import 'dart:developer' as developer;
 
 class AddRecordController extends GetxController {
   static AddRecordController get instance => Get.find();
@@ -16,6 +17,7 @@ class AddRecordController extends GetxController {
   RxBool isYearEnabled = false.obs;
   RxBool isCurrentSalaryEnteredEnabled = false.obs;
   RxBool isPreviousSalaryEnteredEnabled = false.obs;
+
   var fieldValue = ''.obs;
   final List<String> radioOptions = [currentYrIncomeLbl, customYrIncomeLbl];
   RxInt selectedRadio = RxInt(0);
@@ -26,7 +28,8 @@ class AddRecordController extends GetxController {
   final addSalaryFormKey = GlobalKey<FormState>();
   final currentDateFormKey = GlobalKey<FormState>();
   final previousDateFormKey = GlobalKey<FormState>();
-  final addRecordFormKey = GlobalKey<FormState>();
+  final currAddRecordFormKey = GlobalKey<FormState>();
+  final custAddRecordFormKey = GlobalKey<FormState>();
 
   final currentSalaryController = TextEditingController();
   final customSalaryController = TextEditingController();
@@ -41,6 +44,13 @@ class AddRecordController extends GetxController {
   final expParticularController = TextEditingController();
   final payDateController = TextEditingController();
   final payStatusController = TextEditingController();
+
+  final custExpAmountController = TextEditingController();
+  final custExpTypeController = TextEditingController();
+  final custExpDateController = TextEditingController();
+  final custExpParticularController = TextEditingController();
+  final custPayDateController = TextEditingController();
+  final custPayStatusController = TextEditingController();
 
   // Get the current year
   int currentYear = DateTime.now().year;
@@ -94,11 +104,32 @@ class AddRecordController extends GetxController {
     if (selectedRadio.value.isEqual(0)) {
       checkExistingMonthlyIncome(
           currentDateMonthController.text, currentDateYearController.text);
+      clearTextField();
     } else {
       fieldValue.value = '';
       customDateMonthController.clear();
       customDateYearController.clear();
       customSalaryController.clear();
+      clearTextField();
+    }
+  }
+
+  clearTextField() {
+    if (selectedRadio.value.isEqual(0)) {
+      expAmountController.clear();
+      expTypeController.clear();
+      expDateController.clear();
+      expParticularController.clear();
+      payDateController.clear();
+      payStatusController.clear();
+    } else {
+      // CustomDate controller clear
+      custExpAmountController.clear();
+      custExpTypeController.clear();
+      custExpDateController.clear();
+      custExpParticularController.clear();
+      custPayDateController.clear();
+      custPayStatusController.clear();
     }
   }
 
@@ -221,79 +252,74 @@ class AddRecordController extends GetxController {
     );
   }
 
-  checkPath(BuildContext ctx) async {
+  checkPath(
+      BuildContext ctx,
+      String collectionName,
+      String monthCollectionName,
+      String yearDocName,
+      String expAmnt,
+      String expType,
+      String expDate,
+      String expParticular,
+      String payDate,
+      String payStatus) async {
     try {
-      if (selectedRadio.value.isEqual(0)) {
-        final DocumentSnapshot snapShot = await FirebaseFirestore.instance
-            .collection(currentYearCollectionNameLbl)
-            .doc(user_number)
-            .collection(currentDateYearController.text)
-            .doc(currentDateMonthController.text)
-            .get();
-        if (snapShot.exists) {
-          await snapShot.reference.collection(expensedLbl).doc().set({
-            'expensed_amount': expAmountController.text, //'30 Sept 2023',
-            'expensed_type': expTypeController.text,
-            'expensed_date': expDateController.text,
-            'expensed_particular': expParticularController.text,
-            'payment_date': payDateController.text,
-            'payment_status': payStatusController.text,
-          }).then((result) {
-            onLoading(ctx, recordAddedLbl);
-            expAmountController.clear();
-            expTypeController.clear();
-            expDateController.clear();
-            expParticularController.clear();
-            payDateController.clear();
-            payStatusController.clear();
-            isMonthEnabled.value = true;
-          }).catchError((error) {
-            onLoading(ctx, error);
-          });
-        } else {
-          onLoading(ctx, monthYearExistanceErrorLbl);
-        }
+      final DocumentSnapshot snapShot = await FirebaseFirestore.instance
+          .collection(collectionName)
+          .doc(user_number)
+          .collection(yearDocName)
+          .doc(monthCollectionName)
+          .get();
+
+      if (snapShot.exists) {
+        await snapShot.reference.collection(expensedLbl).doc().set({
+          'expensed_amount': expAmnt, //'30 Sept 2023',
+          'expensed_type': expType,
+          'expensed_date': expDate,
+          'expensed_particular': expParticular,
+          'payment_date': payDate,
+          'payment_status': payStatus,
+        }).then((result) {
+          onLoading(ctx, recordAddedLbl);
+          isMonthEnabled.value = true;
+          clearTextField();
+        }).catchError((error) {
+          onLoading(ctx, error);
+        });
       } else {
-        final DocumentSnapshot snapShot = await FirebaseFirestore.instance
-            .collection(customYearCollectionNameLbl)
-            .doc(user_number)
-            .collection(customDateYearController.text)
-            .doc(customDateMonthController.text)
-            .get();
-        if (snapShot.exists) {
-          await snapShot.reference.collection(expensedLbl).doc().set({
-            'expensed_amount': expAmountController.text, //'30 Sept 2023',
-            'expensed_type': expTypeController.text,
-            'expensed_date': expDateController.text,
-            'expensed_particular': expParticularController.text,
-            'payment_date': payDateController.text,
-            'payment_status': payStatusController.text,
-          }).then((result) {
-            onLoading(ctx, recordAddedLbl);
-            expAmountController.clear();
-            expTypeController.clear();
-            expDateController.clear();
-            expParticularController.clear();
-            payDateController.clear();
-            payStatusController.clear();
-            isMonthEnabled.value = true;
-          }).catchError((error) {
-            onLoading(ctx, error);
-          });
-        } else {
-          onLoading(ctx, monthYearExistanceErrorLbl);
-        }
+        onLoading(ctx, monthYearExistanceErrorLbl);
       }
     } catch (e) {
-      print("helo error");
+      developer.log(e.toString());
     }
   }
 
   // Form submission function
-  void submitRecordForm(BuildContext ctx) async {
-    if (addRecordFormKey.currentState!.validate()) {
-      addRecordFormKey.currentState!.save();
-      checkPath(ctx);
+  void submitRecordForm(
+      BuildContext ctx,
+      String collectionName,
+      monthCollectionName,
+      yearDocName,
+      formKey,
+      expAmntController,
+      expTypeController,
+      expDateController,
+      expPrtController,
+      expPayDtController,
+      expStController) async {
+    if (formKey.currentState!.validate()) {
+      formKey.currentState!.save();
+      checkPath(
+          ctx,
+          collectionName,
+          monthCollectionName,
+          yearDocName,
+          expAmntController,
+          expTypeController,
+          expDateController,
+          expPrtController,
+          expPayDtController,
+          expStController);
     }
   }
 
@@ -307,7 +333,18 @@ class AddRecordController extends GetxController {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
+    currentSalaryController.dispose();
+    customSalaryController.dispose();
+    currentDateMonthController.dispose();
+    currentDateYearController.dispose();
+    customDateMonthController.dispose();
+    customDateYearController.dispose();
+    expAmountController.dispose();
+    expTypeController.dispose();
+    expDateController.dispose();
+    expParticularController.dispose();
+    payDateController.dispose();
+    payStatusController.dispose();
   }
 }
