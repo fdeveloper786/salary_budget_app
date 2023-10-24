@@ -5,6 +5,6 @@ import 'package:salary_budget/Presentation/Screens/view_record/controller/view_c
 class ViewRecordScreenBinding extends Bindings {
   @override
   void dependencies() {
-    Get.lazyPut(() => ViewScreenController());
+    Get.lazyPut(() => ViewRecordController());
   }
 }

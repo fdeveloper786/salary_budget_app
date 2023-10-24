@@ -1,81 +1,131 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:salary_budget/Presentation/Screens/view_record/model/view_model.dart';
+import 'package:get/get.dart';
+import 'package:salary_budget/Data/Core/Utils/app_constants.dart';
+import 'package:salary_budget/Presentation/Screens/view_record/controller/view_controller.dart';
+import 'package:salary_budget/Presentation/Screens/view_record/widgets/current_year_data.dart';
+import 'package:salary_budget/Presentation/Screens/view_record/widgets/custom_year_data.dart';
+import 'package:salary_budget/Data/Core/Utils/app_decoration.dart';
 
-class ViewRecordScreen extends StatefulWidget {
-  @override
-  _ViewRecordScreenState createState() => _ViewRecordScreenState();
-}
-
-class _ViewRecordScreenState extends State<ViewRecordScreen> {
-
-
-  CollectionReference users = FirebaseFirestore.instance
-      .collection('salary_data')
-      .doc('7493008905')
-      .collection('2020')
-      .doc('Jun_salary')
-      .collection('Expensed');
-
-  late Stream<QuerySnapshot> _dataStream;
-
-  @override
-  void initState() {
-    super.initState();
-    _dataStream =
-        users.snapshots(); // Listen for changes in the Firestore collection
-  }
+class ViewRecordScreen extends StatelessWidget {
+  ViewRecordController viewRecordController = Get.put(ViewRecordController());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('Salary Budget Record View'),
+          title: const Text('View Record'),
         ),
-        body: StreamBuilder<QuerySnapshot>(
-          stream: _dataStream,
-          builder: (context, snapshot) {
-            if (!snapshot.hasData) {
-              return CircularProgressIndicator();
-            }
-            // Extract the documents from the snapshot
-            List<QueryDocumentSnapshot> documents = snapshot.data!.docs;
-            return DataTable(
-              columns: [
-                DataColumn(
-                  label: Text('Expended Amount'),
+        body: Stack(
+          children: [
+            SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Container(
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.grey,
+                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(20))),
+                  child: Column(
+                    children: [
+                      selectRadioButton(),
+                      viewReceivedIncome(context),
+                      dataTable(),
+                    ],
+                  ),
                 ),
-                DataColumn(
-                  label: Text('Expended Date'),
-                ),
-                DataColumn(
-                  label: Text('Expended Particular'),
-                ),
-                DataColumn(
-                  label: Text('Expended Type'),
-                ),
-                DataColumn(
-                  label: Text('Payment Date'),
-                ),
-                DataColumn(
-                  label: Text('Payment Status'),
-                ),
-              ],
-              rows: documents.map((document) {
-                Map<String, dynamic> data =
-                    document.data() as Map<String, dynamic>;
-
-                return DataRow(cells: [
-                  DataCell(Text(data['expensed_amount'])),
-                  DataCell(Text(data['expensed_date'])),
-                  DataCell(Text(data['expensed_particular'])),
-                  DataCell(Text(data['expensed_type'])),
-                  DataCell(Text(data['payment_date'])),
-                  DataCell(Text(data['payment_status'])),
-                ]);
-              }).toList(),
-            );
-          },
+              ),
+            ),
+          ],
         ));
+  }
+
+  Widget selectRadioButton() {
+    return Row(
+      children: [
+        Expanded(
+          child: Obx(() => Row(
+                children: List<Widget>.generate(
+                    viewRecordController.radioOptions.length, (index) {
+                  return Expanded(
+                    child: RadioListTile(
+                        title: Text(viewRecordController.radioOptions[index]
+                            .toString()),
+                        value: index,
+                        groupValue: viewRecordController.selectedRadio.value,
+                        onChanged: (int? value) {
+                          viewRecordController.selectedRadio.value = value!;
+                          viewRecordController.changeSelectedValue();
+                        }),
+                  );
+                }),
+              )),
+        ),
+      ],
+    );
+  }
+
+  Widget viewReceivedIncome(BuildContext ctx) {
+    return Obx(() {
+      return viewRecordController.selectedRadio.value.isEqual(0)
+          ? CurrentYearIncomeRecords(
+              currentYearRecordsController: viewRecordController,
+              incomeContext: ctx,
+            )
+          : CustomYearIncomeRecords(
+              customYearRecordsController: viewRecordController,
+              incomeContext: ctx,
+            );
+    });
+  }
+
+  Widget dataTable() {
+    print('--${viewRecordController.recordList.length}');
+    return Obx(() {
+      return Visibility(
+        visible: viewRecordController.isIncomeNull.value,
+        child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: (viewRecordController.recordList.length == 0)
+                ? Center(
+                    child: Text('No record added.Firstly add the record.'),
+                  )
+                : DataTable(
+                    columnSpacing: 20.0,
+                    columns: <DataColumn>[
+                      DataColumn(
+                        label: Text('Exp Amount'),
+                      ),
+                      DataColumn(
+                        label: Text('Exp Date'),
+                      ),
+                      DataColumn(
+                        label: Text('Exp Type'),
+                      ),
+                      DataColumn(
+                        label: Text('Exp Particular'),
+                      ),
+                      DataColumn(
+                        label: Text('Pay Date'),
+                      ),
+                      DataColumn(
+                        label: Text('Pay Status'),
+                      ),
+                    ],
+                    rows: viewRecordController.recordList.map((data) {
+                      return DataRow(cells: <DataCell>[
+                        DataCell(Text(data.expendAmount.toString())),
+                        DataCell(
+                          Text(data.expendDate.toString()),
+                        ),
+                        DataCell(Text(data.expendType.toString())),
+                        DataCell(Text(data.particularName.toString())),
+                        DataCell(Text(data.paymentDate.toString())),
+                        DataCell(Text(data.paymentStatus.toString())),
+                      ]);
+                    }).toList(),
+                  )),
+      );
+    });
   }
 }

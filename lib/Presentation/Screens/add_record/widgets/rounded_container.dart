@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:salary_budget/Data/Core/Utils/app_constants.dart';
+import 'package:salary_budget/Data/Core/Utils/app_decoration.dart';
+import 'package:salary_budget/Domain/extensions/extensions.dart';
 
 class RoundedContainer extends StatelessWidget {
   final String? monthName;
@@ -8,6 +11,9 @@ class RoundedContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final incomeValue = double.tryParse(monthIncome)!
+        .toStringAsFixed(2)
+        .formatAsCurrency(); //monthIncome;
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Container(
@@ -20,11 +26,18 @@ class RoundedContainer extends StatelessWidget {
               width: 0.7), // Adjust the value to control the roundness
         ),
         child: Center(
-          child: Text(
-            "$monthName Income :\tINR\t" + monthIncome.toString(),
+            child: /* Text(
+            "$monthName Income :\t$indianRupeeSymbol\t" + monthIncome.toString(),
             style: TextStyle(color: Colors.black87, fontSize: 20),
-          ),
-        ),
+          ),*/
+                RichText(
+          text: TextSpan(children: <TextSpan>[
+            TextSpan(
+                text: "$monthName Income :",
+                style: TextStyle(color: Colors.black87, fontSize: 20)),
+            TextSpan(text: "\t$incomeValue", style: AppStyle.txtBlack20),
+          ]),
+        )),
       ),
     );
   }

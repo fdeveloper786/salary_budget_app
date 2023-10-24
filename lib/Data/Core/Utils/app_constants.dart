@@ -1,6 +1,7 @@
 // -------- SharedPreferences labels -------- //
 const String isLoggedLbl = "isLogged";
 
+const indianRupeeSymbol = '\u20B9';
 const String loginLbl = 'Login';
 const String enterMobileNumberLbl = "Enter Mobile Number";
 const String emptyErrorLbl = 'Please enter mobile number';
@@ -42,3 +43,19 @@ const String montYearErrorLbl = "Please enter month salary first with selection 
 const String monthYearExistanceErrorLbl = "Sorry ! this month & year does not exist in our record.Please add income first.";
 const String monthlySalaryAddedLbl = "Monthly salary added sucessfully.";
 const String recordAddedLbl = "1 Record added successfully.";
+
+// -------- Add Records -------- //
+
+const String currentYrIncomeLbl = "Current Year Income";
+const String customYrIncomeLbl = "Custom Year Income";
+const String currentYrRecordsLbl = "Current Year Records";
+const String customYrRecordsLbl = "Custom Year Records";
+
+
+// -------- Collections Name --------
+
+const String incomeLbl = 'total_income';
+const String currentYearCollectionNameLbl = 'current_year_income_data';
+const String customYearCollectionNameLbl = 'custom_year_income_data';
+const String expensedLbl = 'Expensed';
+

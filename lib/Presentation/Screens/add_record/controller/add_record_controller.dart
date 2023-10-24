@@ -16,9 +16,9 @@ class AddRecordController extends GetxController {
   RxBool isYearEnabled = false.obs;
   RxBool isCurrentSalaryEnteredEnabled = false.obs;
   RxBool isPreviousSalaryEnteredEnabled = false.obs;
-  var selectedValue = 'Current Date'.obs;
-  var radioButtonIndex = 1.obs;
   var fieldValue = ''.obs;
+  final List<String> radioOptions = [currentYrIncomeLbl, customYrIncomeLbl];
+  RxInt selectedRadio = RxInt(0);
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   BuildContext? context;
@@ -66,7 +66,6 @@ class AddRecordController extends GetxController {
     '2020',
     '2021',
     '2022',
-    '2023',
   ].obs;
 
   var paymentStatusList = [
@@ -81,7 +80,6 @@ class AddRecordController extends GetxController {
 
   @override
   void onInit() async {
-    // TODO: implement onInit
     super.onInit();
     user_number = await AuthenticationRepository.instance.userLoggedNumber();
     currentDateYearController.text = currentYear.toString();
@@ -90,13 +88,10 @@ class AddRecordController extends GetxController {
         currentDateMonthController.text, currentDateYearController.text);
   }
 
-  void changeSelectedValue(String value, dynamic radioIndex) {
-    selectedValue.value = value;
-    radioButtonIndex.value = radioIndex;
-    print('radio index is ${radioButtonIndex.value}');
+  void changeSelectedValue() {
     currentDateYearController.text = currentYear.toString();
     currentDateMonthController.text = monthName.toString();
-    if (radioButtonIndex.value.isEqual(1)) {
+    if (selectedRadio.value.isEqual(0)) {
       checkExistingMonthlyIncome(
           currentDateMonthController.text, currentDateYearController.text);
     } else {
@@ -109,9 +104,8 @@ class AddRecordController extends GetxController {
 
   Future<void> checkExistingMonthlyIncome(
       String monthName, String yearNo) async {
-    print('---current month ${monthName} $yearNo');
     try {
-      if (radioButtonIndex.value == 1) {
+      if (selectedRadio.value.isEqual(0)) {
         CollectionReference incomeData = _firestore
             .collection('current_year_income_data')
             .doc(user_number)
@@ -150,16 +144,16 @@ class AddRecordController extends GetxController {
 // check if ID exist
   checkDocument(String docID, BuildContext ctx) async {
     try {
-      if (radioButtonIndex.value == 1) {
+      if (selectedRadio.value.isEqual(0)) {
         final snapShot = await FirebaseFirestore.instance
-            .collection('current_year_income_data')
+            .collection(currentYearCollectionNameLbl)
             .doc(docID)
             .get();
         if (!snapShot.exists) {
           print('id is not exist');
           print("will show adding salary...");
           await FirebaseFirestore.instance
-              .collection('current_year_income_data')
+              .collection(currentYearCollectionNameLbl)
               .doc(user_number)
               .collection(currentDateYearController.text)
               .doc('${currentDateMonthController.text}')
@@ -179,14 +173,14 @@ class AddRecordController extends GetxController {
         }
       } else {
         final snapShot = await FirebaseFirestore.instance
-            .collection('custom_year_income_data')
+            .collection(customYearCollectionNameLbl)
             .doc(docID)
             .get();
         if (!snapShot.exists) {
           print('id is not exist');
           print("will show adding salary...");
           await FirebaseFirestore.instance
-              .collection('custom_year_income_data')
+              .collection(customYearCollectionNameLbl)
               .doc(user_number)
               .collection(customDateYearController.text)
               .doc('${customDateMonthController.text}')
@@ -229,15 +223,15 @@ class AddRecordController extends GetxController {
 
   checkPath(BuildContext ctx) async {
     try {
-      if (radioButtonIndex.value == 1) {
+      if (selectedRadio.value.isEqual(0)) {
         final DocumentSnapshot snapShot = await FirebaseFirestore.instance
-            .collection('current_year_income_data')
+            .collection(currentYearCollectionNameLbl)
             .doc(user_number)
             .collection(currentDateYearController.text)
             .doc(currentDateMonthController.text)
             .get();
         if (snapShot.exists) {
-          await snapShot.reference.collection('Expensed').doc().set({
+          await snapShot.reference.collection(expensedLbl).doc().set({
             'expensed_amount': expAmountController.text, //'30 Sept 2023',
             'expensed_type': expTypeController.text,
             'expensed_date': expDateController.text,
@@ -261,13 +255,13 @@ class AddRecordController extends GetxController {
         }
       } else {
         final DocumentSnapshot snapShot = await FirebaseFirestore.instance
-            .collection('custom_year_income_data')
+            .collection(customYearCollectionNameLbl)
             .doc(user_number)
             .collection(customDateYearController.text)
             .doc(customDateMonthController.text)
             .get();
         if (snapShot.exists) {
-          await snapShot.reference.collection('Expensed').doc().set({
+          await snapShot.reference.collection(expensedLbl).doc().set({
             'expensed_amount': expAmountController.text, //'30 Sept 2023',
             'expensed_type': expTypeController.text,
             'expensed_date': expDateController.text,
@@ -311,7 +305,6 @@ class AddRecordController extends GetxController {
     });
   }
 
-  void clearText() {}
   @override
   void dispose() {
     // TODO: implement dispose

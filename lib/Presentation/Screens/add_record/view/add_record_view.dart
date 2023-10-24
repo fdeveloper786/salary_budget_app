@@ -62,23 +62,21 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
     return Row(
       children: [
         Expanded(
-          child: Obx(() => RadioListTile(
-                title: Text('Current Year Income'),
-                value: 'Current Income',
-                groupValue: addRecordController.selectedValue.value,
-                onChanged: (value) {
-                  addRecordController.changeSelectedValue(value!, 1);
-                },
-              )),
-        ),
-        Expanded(
-          child: Obx(() => RadioListTile(
-                title: Text('Custom Year Income'),
-                value: 'Custom Income',
-                groupValue: addRecordController.selectedValue.value,
-                onChanged: (value) {
-                  addRecordController.changeSelectedValue(value!, 2);
-                },
+          child: Obx(() => Row(
+                children: List<Widget>.generate(
+                    addRecordController.radioOptions.length, (index) {
+                  return Expanded(
+                    child: RadioListTile(
+                        title: Text(
+                            addRecordController.radioOptions[index].toString()),
+                        value: index,
+                        groupValue: addRecordController.selectedRadio.value,
+                        onChanged: (int? value) {
+                          addRecordController.selectedRadio.value = value!;
+                          addRecordController.changeSelectedValue();
+                        }),
+                  );
+                }),
               )),
         ),
       ],
@@ -87,7 +85,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
 
   Widget addReceivedSalary() {
     return Obx(() {
-      return addRecordController.radioButtonIndex.value.isEqual(1)
+      return addRecordController.selectedRadio.value.isEqual(0)
           ? CurrentIncomeCalendar(
               currentDateController: addRecordController,
               incomeContext: context,
@@ -96,169 +94,6 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
               customDateController: addRecordController,
               incomeContext: context,
             );
-      /*return Form(
-          key: addRecordController.addSalaryFormKey,
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      Flexible(
-                        child: TextFormField(
-                          keyboardType: TextInputType.text,
-                          controller: addRecordController.monthController,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          readOnly: true,
-                          enabled: addRecordController.isMonthEnabled.value,
-                          decoration: InputDecoration(
-                            labelText: 'Select month',
-                            suffixIcon: PopupMenuButton<String>(
-                              icon: const Icon(Icons.arrow_drop_down),
-                              onSelected: (String value) {
-                                addRecordController.monthController.text =
-                                    value;
-                                addRecordController.isYearEnabled.value = true;
-                                addRecordController
-                                    .isSalaryEnteredEnabled.value = false;
-                              },
-                              itemBuilder: (BuildContext context) {
-                                return addRecordController.monthList
-                                    .map<PopupMenuItem<String>>((String value) {
-                                  return new PopupMenuItem(
-                                      child: Text(value), value: value);
-                                }).toList();
-                              },
-                            ),
-                            contentPadding:
-                                EdgeInsets.symmetric(horizontal: 10),
-                            border: OutlineInputBorder(
-                              borderRadius: const BorderRadius.all(
-                                const Radius.circular(10.0),
-                              ),
-                              borderSide: BorderSide(
-                                width: 1,
-                                style: BorderStyle.none,
-                              ),
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please select month!';
-                            }
-                            return null;
-                          },
-                          onChanged: (value) {},
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Flexible(
-                        child: TextFormField(
-                          keyboardType: TextInputType.text,
-                          controller: addRecordController.yearController,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          readOnly: true,
-                          enabled: addRecordController.isYearEnabled.value,
-                          decoration: InputDecoration(
-                            labelText: 'Select year',
-                            suffixIcon: PopupMenuButton<String>(
-                              icon: const Icon(Icons.arrow_drop_down),
-                              onSelected: (String value) {
-                                addRecordController.yearController.text = value;
-                                //addRecordController.isYearEnabled.value = true;
-                                addRecordController
-                                    .isSalaryEnteredEnabled.value = true;
-                              },
-                              itemBuilder: (BuildContext context) {
-                                return addRecordController.yearList
-                                    .map<PopupMenuItem<String>>((String value) {
-                                  return PopupMenuItem(
-                                      child: new Text(value), value: value);
-                                }).toList();
-                              },
-                            ),
-                            contentPadding:
-                                EdgeInsets.symmetric(horizontal: 15),
-                            border: OutlineInputBorder(
-                              borderRadius: const BorderRadius.all(
-                                const Radius.circular(10.0),
-                              ),
-                              borderSide: BorderSide(
-                                width: 1,
-                                style: BorderStyle.none,
-                              ),
-                            ),
-                          ),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please select year!';
-                            }
-                            return null;
-                          },
-                          onChanged: (value) {},
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextFormField(
-                    keyboardType: TextInputType.number,
-                    controller: addRecordController.salaryController,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    enabled: addRecordController.isSalaryEnteredEnabled.value,
-                    decoration: InputDecoration(
-                      labelText: 'Enter month salary',
-                      suffixIcon: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: CustomGradientButton(
-                          child: Text(
-                            'Add',
-                            style: AppStyle.txtWhite15,
-                          ),
-                          height: 20.0,
-                          width: 40.0,
-                          firstColor: Colors.greenAccent,
-                          secondColor: Colors.blueAccent,
-                          method: () {
-                            addRecordController.submitSalaryForm(
-                                addRecordController.yearController.text,
-                                addRecordController.monthController.text,
-                                salaryCtx);
-                          },
-                        ),
-                      ),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 10),
-                      border: OutlineInputBorder(
-                        borderRadius: const BorderRadius.all(
-                          const Radius.circular(10.0),
-                        ),
-                        borderSide: BorderSide(
-                          width: 1,
-                          style: BorderStyle.none,
-                        ),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter your received salary';
-                      }
-                      return null;
-                    },
-                    onChanged: (value) {
-                      print("salary $value");
-                    },
-                  ),
-                ),
-              ],
-            ),
-          ));*/
     });
   }
 
