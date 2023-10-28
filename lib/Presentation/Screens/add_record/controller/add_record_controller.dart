@@ -91,7 +91,7 @@ class AddRecordController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    user_number = await AuthenticationRepository.instance.userLoggedNumber();
+    user_number = await AuthenticationRepository.instance.loggedUserName();
     currentDateYearController.text = currentYear.toString();
     currentDateMonthController.text = monthName.toString();
     checkExistingMonthlyIncome(

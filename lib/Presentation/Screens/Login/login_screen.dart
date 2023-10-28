@@ -1,14 +1,20 @@
 import 'package:custom_gradient_button/custom_gradient_button.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:salary_budget/Data/Core/Utils/app_constants.dart';
 import 'package:salary_budget/Data/Core/Utils/app_decoration.dart';
 import 'package:salary_budget/Data/Core/Utils/image_utils.dart';
+import 'package:salary_budget/Domain/AppRoutes/routes.dart';
 import 'package:salary_budget/Domain/Mixins/form_validation_mixins.dart';
+import 'package:salary_budget/Presentation/Screens/HomeScreen/controller/home_controller.dart';
+import 'package:salary_budget/Presentation/Screens/HomeScreen/home_screen.dart';
 import 'package:salary_budget/Presentation/Screens/Login/controller/login_controller.dart';
-import 'package:salary_budget/Presentation/Screens/Otp_Screen/otp_validation_screen.dart';
 import 'package:salary_budget/Presentation/Widgets/common_widgets/common_widgets.dart';
+import 'package:salary_budget/repository/authenticaion_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatelessWidget with InputValidationMixin {
@@ -24,7 +30,9 @@ class LoginScreen extends StatelessWidget with InputValidationMixin {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: true,
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: const Text(
           loginLbl,
           style: AppStyle.txtBlack25,
@@ -38,7 +46,7 @@ class LoginScreen extends StatelessWidget with InputValidationMixin {
               key: loginFormGlobalKey,
               child: Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                    const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
                 child: Column(
                   children: [
                     Image.asset(
@@ -57,7 +65,7 @@ class LoginScreen extends StatelessWidget with InputValidationMixin {
                       decoration: InputDecoration(
                         hintText: enterMobileNumberLbl,
                         border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20.0),
+                          borderRadius: BorderRadius.circular(10.0),
                         ),
                         fillColor: Colors.white70,
                         filled: true,
@@ -83,44 +91,124 @@ class LoginScreen extends StatelessWidget with InputValidationMixin {
                         }
                       },
                     ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: CustomGradientButton(
+                          child: const Text(
+                            loginLbl,
+                            style: AppStyle.txtWhite20,
+                          ),
+                          firstColor: Colors.greenAccent,
+                          secondColor: Colors.blueAccent,
+                          height: 40.0,
+                          width: 150.0,
+                          method: () async {
+                            if (loginFormGlobalKey.currentState!.validate()) {
+                              loginFormGlobalKey.currentState!.save();
+                              loginController.phoneAuthentication("+91" +
+                                  loginController.phoneController.text.trim());
+                              WidgetsHelper.onLoadingPage(context);
+                              Future.delayed(const Duration(seconds: 2), () {
+                                Navigator.pop(context); //pop dialog
+                                Get.toNamed(AppRoutes.otpValidationScreen);
+                                //Get.to(() => OTPValidation());
+                              });
+                            } else {
+                              print("else part in login");
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                    // New Account
+                    RichText(
+                        text: TextSpan(children: <TextSpan>[
+                      TextSpan(
+                        text: 'Don\'t have an account ?',
+                        style: AppStyle.txtBlack18,
+                      ),
+                      TextSpan(
+                          text: '\tSign Up',
+                          style: TextStyle(fontSize: 18, color: Colors.blue),
+                          recognizer: TapGestureRecognizer()
+                            ..onTap = () {
+                              print('tapp on text');
+                            }),
+                    ])),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    orWidget(),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    // Google button
+                    InkWell(
+                      child: Container(
+                        padding: EdgeInsets.all(8.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10.0),
+                          color: Colors.white,
+                          border: Border.all(
+                            color: Colors.black,
+                            width: 1.0,
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              AssetsUtils.googleIconPng,
+                              height: 40,
+                              width: 40,
+                            ),
+                            SizedBox(
+                                width: 16.0), // Space between icon and text
+                            Text('Continue with Google',
+                                style: AppStyle.txtBlack18),
+                          ],
+                        ),
+                      ),
+                      onTap: () async {
+                        await loginController.checkGoogleSignInAuth();
+                        WidgetsHelper.onLoadingPage(context);
+                        User? user =
+                            await loginController.googleAuthentication();
+                        WidgetsHelper.onLoadingPage(context);
+                        if (user != null) {
+                          await AuthenticationRepository.instance
+                              .setLoginSession(user.displayName!);
+                          print('---signed in with google${user.displayName}');
+                          Get.put(HomeController()).displayName.value =
+                              user.displayName!;
+                          Future.delayed(const Duration(seconds: 2), () {
+                            //Navigator.pop(context); //pop dialog
+                            Get.off(HomeScreen());
+                          });
+                        } else {
+                          print('----sign in failed');
+                        }
+                      },
+                    ),
                   ],
                 ),
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: CustomGradientButton(
-                child: const Text(
-                  loginLbl,
-                  style: AppStyle.txtWhite20,
-                ),
-                firstColor: Colors.greenAccent,
-                secondColor: Colors.blueAccent,
-                height: 40.0,
-                width: 150.0,
-                method: () async {
-                  if (loginFormGlobalKey.currentState!.validate()) {
-                    loginFormGlobalKey.currentState!.save();
-                    loginController.phoneAuthentication(
-                        "+91" + loginController.phoneController.text.trim());
-                    WidgetsHelper.onLoadingPage(context);
-                    //AuthenticationRepository.instance.setLoggedInSession();
-                    Future.delayed(const Duration(seconds: 2), () {
-                      Navigator.pop(context); //pop dialog
-                      Get.to(() => OTPValidation());
-                    });
-                  } else {
-                    print("else part in login");
-                  }
-                },
-              ),
-            ),
-          ),
         ],
       ),
+    );
+  }
+
+  Widget orWidget() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+      child: Row(children: <Widget>[
+        Expanded(child: Divider()),
+        Text("\t\tOR\t\t"),
+        Expanded(child: Divider()),
+      ]),
     );
   }
 }

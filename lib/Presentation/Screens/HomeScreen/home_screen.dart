@@ -11,16 +11,6 @@ class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
 
   final homeController = Get.put(HomeController());
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  // Form submission function
-  void _submitAlertBox(BuildContext ctx) {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-      Navigator.pop(ctx);
-      Navigator.of(ctx).pushNamed(AppRoutes.addRecordScreen);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +27,8 @@ class HomeScreen extends StatelessWidget {
                       fontSize: 20),
                   children: <TextSpan>[
                     TextSpan(
-                      text: homeController.userName.value.toString() ?? '',
+                      text: homeController.displayName.value.toString() ??
+                          'Guest',
                       style: TextStyle(
                           color: Colors.blueAccent,
                           fontWeight: FontWeight.w700,
@@ -112,7 +103,7 @@ class HomeScreen extends StatelessWidget {
                                 btnLabel: "View Record",
                                 onTap: () {
                                   print('Record view');
-                                  Navigator.of(context).pushNamed(AppRoutes.viewRecordScreen);
+                                  Get.toNamed(AppRoutes.viewRecordScreen);
                                 },
                               ),
                             ),
@@ -146,46 +137,5 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
         ));
-  }
-
-  void _showAlertDialog(BuildContext context) {
-    TextEditingController _textFieldController = TextEditingController();
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Salary of ${homeController.currentMonthName.value}'),
-          content: Form(
-            key: _formKey,
-            child: TextFormField(
-              controller: _textFieldController,
-              decoration: InputDecoration(hintText: 'Enter received salary'),
-              validator: (value) {
-                if (value!.isEmpty) {
-                  return 'Please enter your salary';
-                }
-              },
-            ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('Cancel'),
-            ),
-            TextButton(
-              onPressed: () {
-                String enteredText = _textFieldController.text;
-                print('Entered Text: $enteredText');
-                _submitAlertBox(context);
-              },
-              child: Text('OK'),
-            ),
-          ],
-        );
-      },
-    );
   }
 }
