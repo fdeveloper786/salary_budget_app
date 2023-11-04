@@ -8,3 +8,13 @@ extension CurrencyFormatting on String {
     return currencyFormat.format(valueAsDouble);
   }
 }
+
+extension StringToDouble on String {
+  double toDoubleOrDefault(double defaultValue) {
+    try {
+      return double.parse(this);
+    } catch (e) {
+      return defaultValue;
+    }
+  }
+}

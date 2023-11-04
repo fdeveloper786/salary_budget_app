@@ -32,5 +32,4 @@ class LoginController extends GetxController {
   void setSession([String? phoneNo]) async {
     await AuthenticationRepository.instance.setLoginSession(phoneNo!);
   }
-
 }
