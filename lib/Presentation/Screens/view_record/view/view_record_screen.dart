@@ -86,7 +86,6 @@ class ViewRecordScreen extends StatelessWidget {
   }
 
   Widget dataTable() {
-    print('--${viewRecordController.recordList.length}');
     return Obx(() {
       return Visibility(
         visible: viewRecordController.isIncomeNull.value,
@@ -100,34 +99,34 @@ class ViewRecordScreen extends StatelessWidget {
                     columnSpacing: 20.0,
                     columns: <DataColumn>[
                       DataColumn(
-                        label: Text('Exp Amount'),
+                        label: Text('Date'),
                       ),
                       DataColumn(
-                        label: Text('Exp Date'),
+                        label: Text('Particulars'),
                       ),
                       DataColumn(
-                        label: Text('Exp Type'),
+                        label: Text('Type'),
                       ),
                       DataColumn(
-                        label: Text('Exp Particular'),
+                        label: Text('Amount'),
                       ),
                       DataColumn(
-                        label: Text('Pay Date'),
+                        label: Text('Status'),
                       ),
                       DataColumn(
-                        label: Text('Pay Status'),
+                        label: Text('Remarks'),
                       ),
                     ],
                     rows: viewRecordController.recordList.map((data) {
                       return DataRow(cells: <DataCell>[
-                        DataCell(Text(data.expendAmount.toString())),
                         DataCell(
-                          Text(data.expendDate.toString()),
+                          Text(data.transDate.toString()),
                         ),
-                        DataCell(Text(data.expendType.toString())),
-                        DataCell(Text(data.particularName.toString())),
-                        DataCell(Text(data.paymentDate.toString())),
-                        DataCell(Text(data.paymentStatus.toString())),
+                        DataCell(Text(data.transParticular.toString())),
+                        DataCell(Text(data.transType.toString())),
+                        DataCell(Text(data.transAmount.toString())),
+                        DataCell(Text(data.transStatus.toString())),
+                        DataCell(Text(data.transRemarks.toString())),
                       ]);
                     }).toList(),
                   )),

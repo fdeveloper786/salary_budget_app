@@ -123,7 +123,7 @@ class LoginScreen extends StatelessWidget with InputValidationMixin {
                       ),
                     ),
                     // New Account
-                    RichText(
+                    /* RichText(
                         text: TextSpan(children: <TextSpan>[
                       TextSpan(
                         text: 'Don\'t have an account ?',
@@ -190,7 +190,7 @@ class LoginScreen extends StatelessWidget with InputValidationMixin {
                           print('----sign in failed');
                         }
                       },
-                    ),
+                    ),*/
                   ],
                 ),
               ),

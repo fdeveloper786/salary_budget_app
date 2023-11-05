@@ -99,14 +99,15 @@ class AuthenticationRepository extends GetxController {
   Future<bool?> removedUserName() async {
     try {
       bool isRemoved = false;
-      final User? user = _auth.currentUser;
+      /*final User? user = _auth.currentUser;
       if (user != null) {
         await googleSignIn.signOut();
         isRemoved = await prefs.remove('user_name');
       } else {
         isRemoved = await prefs.remove('user_name');
         //Get.off(LoginScreen());
-      }
+      }*/
+      isRemoved = await prefs.remove('user_name');
       return isRemoved;
     } catch (e) {
       developer.log('----logoutcatch $e');
@@ -182,7 +183,7 @@ class AuthenticationRepository extends GetxController {
 
   Future<void> logoutGoogle() async {
     await prefs.setBool(isLoggedLbl, false);
-    await googleSignIn.signOut();
+    //await googleSignIn.signOut();
     Get.off(LoginScreen()); // navigate to your wanted page after logout.
   }
 }

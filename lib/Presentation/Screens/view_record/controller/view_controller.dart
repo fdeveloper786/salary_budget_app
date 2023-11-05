@@ -156,33 +156,24 @@ class ViewRecordController extends GetxController {
           snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>));
       if (firestoreData.isNotEmpty) {
         for (var data in firestoreData) {
-          final expensedAmount = double.tryParse(data['expensed_amount']);
+          final expensedAmount = double.tryParse(data['amount']);
           recordList.add(ViewRecordTileModel(
-            expendAmount: expensedAmount!.toStringAsFixed(2).formatAsCurrency(),
-            expendDate: data['expensed_date'],
-            expendType: data['expensed_type'],
-            particularName: data['expensed_particular'],
-            paymentDate: data['payment_date'],
-            paymentStatus: data['payment_status'],
+            transDate: data['transaction_date'],
+            transParticular: data['particular'],
+            transType: data['transaction_type'],
+            transAmount: expensedAmount!.toStringAsFixed(2).formatAsCurrency(),
+            transStatus: data['payment_status'],
+            transRemarks: data['remarks'],
           ));
 
-          if (data['expensed_type'] == 'Debit') {
+          if (data['transaction_type'] == 'Debit') {
             debitedAmounts.add(expensedAmount);
             totalDebitedAmount.value = totalDebitedMethod(debitedAmounts);
           }
-          if (data['expensed_type'] == 'Credit') {
+          if (data['transaction_type'] == 'Credit') {
             creditedAmounts.add(expensedAmount);
             totalCreditedAmount.value = totalCreditedMethod(creditedAmounts);
           }
-          if (data['expensed_type'] == 'Borrow') {
-            //creditedAmounts.clear();
-            //debitedAmounts.clear();
-            //totalDebitedAmount.value = 0.00;
-            //totalCreditedAmount.value = 0.00;
-            print(
-                '--borrow ${totalCreditedAmount.value} ${totalDebitedAmount.value}');
-          }
-
           totalBalance.value = totalBalanceMethod(
               double.tryParse(fieldValue.value),
               totalDebitedAmount.value,
