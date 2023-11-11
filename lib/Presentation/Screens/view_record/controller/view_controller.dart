@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:salary_budget/Data/Core/Utils/app_constants.dart';
 import 'package:salary_budget/Domain/extensions/extensions.dart';
+import 'package:salary_budget/Presentation/Screens/update_record/controller/update_controller.dart';
 import 'package:salary_budget/Presentation/Screens/view_record/view/view_record_tile_model.dart';
 import 'package:salary_budget/repository/authenticaion_repository.dart';
 import 'dart:developer' as developer;
@@ -61,6 +62,7 @@ class ViewRecordController extends GetxController {
   // Format the current date to display the month name
   String monthName = DateFormat('MMM').format(DateTime.now());
   RxList<Map<String, dynamic>> firestoreData = RxList<Map<String, dynamic>>();
+  RxList<dynamic> docIdData = RxList<dynamic>();
   List<ViewRecordTileModel> recordList = <ViewRecordTileModel>[].obs;
 
   @override
@@ -152,12 +154,24 @@ class ViewRecordController extends GetxController {
           .doc(month)
           .collection(expensedLbl);
       final QuerySnapshot snapshot = await expensedData.get();
+
+      docIdData.assignAll(
+        snapshot.docs.map((doc) => doc.id as String),
+      );
       firestoreData.assignAll(
-          snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>));
+        snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>),
+      );
+      // Adding IDs to each map in the list
+      for (int i = 0; i < firestoreData.length; i++) {
+        firestoreData[i]['docId'] = docIdData[i];
+      }
+      print(firestoreData);
+
       if (firestoreData.isNotEmpty) {
         for (var data in firestoreData) {
           final expensedAmount = double.tryParse(data['amount']);
           recordList.add(ViewRecordTileModel(
+            docId: data['docId'],
             transDate: data['transaction_date'],
             transParticular: data['particular'],
             transType: data['transaction_type'],
@@ -165,7 +179,6 @@ class ViewRecordController extends GetxController {
             transStatus: data['payment_status'],
             transRemarks: data['remarks'],
           ));
-
           if (data['transaction_type'] == 'Debit') {
             debitedAmounts.add(expensedAmount);
             totalDebitedAmount.value = totalDebitedMethod(debitedAmounts);

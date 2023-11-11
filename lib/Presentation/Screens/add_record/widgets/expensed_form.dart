@@ -97,12 +97,12 @@ class ExpensesForm extends StatelessWidget {
                                     }
                                   });
                           },
-                          validator: (value) {
+                         /* validator: (value) {
                             if (value!.isEmpty) {
                               return 'Please enter your Transaction Date!';
                             }
                             return null;
-                          },
+                          },*/
                           onChanged: (value) {},
                         ),
                         const SizedBox(
@@ -126,12 +126,12 @@ class ExpensesForm extends StatelessWidget {
                               ),
                             ),
                           ),
-                          validator: (value) {
+                         /* validator: (value) {
                             if (value!.isEmpty) {
                               return 'Please enter your particular';
                             }
                             return null;
-                          },
+                          },*/
                           onChanged: (value) {},
                         ),
                         const SizedBox(
@@ -169,12 +169,12 @@ class ExpensesForm extends StatelessWidget {
                               ),
                             ),
                           ),
-                          validator: (value) {
+                          /*validator: (value) {
                             if (value!.isEmpty) {
                               return 'Please enter your Transaction Type!';
                             }
                             return null;
-                          },
+                          },*/
                           onChanged: (value) {},
                         ),
                         const SizedBox(
@@ -199,12 +199,12 @@ class ExpensesForm extends StatelessWidget {
                               ),
                             ),
                           ),
-                          validator: (value) {
+                          /*validator: (value) {
                             if (value!.isEmpty) {
                               return 'Please enter your amount!';
                             }
                             return null;
-                          },
+                          },*/
                           onChanged: (value) {},
                         ),
                         const SizedBox(
@@ -243,12 +243,12 @@ class ExpensesForm extends StatelessWidget {
                               ),
                             ),
                           ),
-                          validator: (value) {
+                          /*validator: (value) {
                             if (value!.isEmpty) {
                               return 'Please enter your payment status!';
                             }
                             return null;
-                          },
+                          },*/
                           onChanged: (value) {},
                         ),
 

@@ -264,22 +264,26 @@ class AddRecordController extends GetxController {
     String transRemarks,
   ) async {
     try {
+      Map<String, dynamic> initialData = {
+        'transaction_date': transPayDate,
+        'particular': transParticular,
+        'transaction_type': transType,
+        'amount': transAmnt,
+        'payment_status': transPayStatus,
+        'remarks': transRemarks,
+      };
       final DocumentSnapshot snapShot = await FirebaseFirestore.instance
           .collection(collectionName)
           .doc(user_number)
           .collection(yearDocName)
           .doc(monthCollectionName)
           .get();
-
       if (snapShot.exists) {
-        await snapShot.reference.collection(expensedLbl).doc().set({
-          'transaction_date': transPayDate,
-          'particular': transParticular,
-          'transaction_type': transType,
-          'amount': transAmnt,
-          'payment_status': transPayStatus,
-          'remarks': transRemarks,
-        }).then((result) {
+        await snapShot.reference
+            .collection(expensedLbl)
+            .doc()
+            .set(initialData)
+            .then((result) {
           onLoading(ctx, recordAddedLbl);
           isMonthEnabled.value = true;
           clearTextField();

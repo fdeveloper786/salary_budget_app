@@ -1,4 +1,5 @@
 class ViewRecordTileModel {
+  String? docId;
   String? transDate;
   String? transParticular;
   String? transType;
@@ -7,6 +8,7 @@ class ViewRecordTileModel {
   String? transRemarks;
 
   ViewRecordTileModel({
+    this.docId,
     this.transDate,
     this.transParticular,
     this.transType,
