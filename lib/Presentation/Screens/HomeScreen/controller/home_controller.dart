@@ -8,17 +8,36 @@ import 'package:salary_budget/repository/authenticaion_repository.dart';
 
 class HomeController extends GetxController {
   static HomeController get instance => Get.find();
-  var userName = " ".obs;
+
   var greetingsMsg = ''.obs;
   var currentTime = int.parse(DateFormat('kk').format(DateTime.now()));
   var currentMonthName = "".obs;
+  var displayName = ''.obs;
+
+  @override
+  void onInit() async {
+    super.onInit();
+    getUserName();
+    greetingsMessage();
+    getCurrentMonthName();
+  }
+
+  Future<String?> getUserName() async {
+    try {
+      displayName.value =
+      await AuthenticationRepository.instance.loggedUserName();
+      return displayName.value;
+    } catch (e) {
+      print('e $e');
+    }
+  }
 
   void userLoggedOut(BuildContext context) async {
     bool? isLoggedOut;
     try {
       isLoggedOut = await AuthenticationRepository.instance.userLoggedOut();
       WidgetsHelper.onLoadingPage(context);
-      Future.delayed(const Duration(seconds: 3), () async {
+      Future.delayed(const Duration(seconds: 2), () async {
         Navigator.pop(context); //pop dialog
         if (isLoggedOut!) {
           await AuthenticationRepository.instance.removedUserName();
@@ -29,26 +48,6 @@ class HomeController extends GetxController {
       });
     } catch (e) {
       print('exception $e');
-    }
-  }
-
-  @override
-  void onInit() {
-    // TODO: implement onInit
-
-    getUserName();
-    super.onInit();
-    greetingsMessage();
-    getCurrentMonthName();
-  }
-
-  getUserName() async {
-    try {
-      userName.value =
-          await AuthenticationRepository.instance.userLoggedNumber();
-      print('username ${userName.value}');
-    } catch (e) {
-      print('e $e');
     }
   }
 
@@ -73,8 +72,5 @@ class HomeController extends GetxController {
     print("monthname $monthName");
     currentMonthName.value = monthName;
     return currentMonthName.value;
-  }
-  createDb() async {
-
   }
 }

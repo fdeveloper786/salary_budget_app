@@ -37,7 +37,8 @@ class HomeScreen extends StatelessWidget {
                       fontSize: 20),
                   children: <TextSpan>[
                     TextSpan(
-                      text: homeController.userName.value.toString() ?? '',
+                      text: homeController.displayName.value.toString() ??
+                          'Guest',
                       style: TextStyle(
                           color: Colors.blueAccent,
                           fontWeight: FontWeight.w700,
@@ -112,7 +113,8 @@ class HomeScreen extends StatelessWidget {
                                 btnLabel: "View Record",
                                 onTap: () {
                                   print('Record view');
-                                  Navigator.of(context).pushNamed(AppRoutes.viewRecordScreen);
+                                  Navigator.of(context)
+                                      .pushNamed(AppRoutes.viewRecordScreen);
                                 },
                               ),
                             ),

@@ -39,7 +39,8 @@ const String appId = "1:412855408264:web:4b49a536ca5f825368f13d";
 const String measurementId = "G-RECGZ6224P";
 
 // -------- Error Labels -------- //
-const String montYearErrorLbl = "Please enter month salary first with selection of month and year!";
+const String montYearErrorLbl =
+    "Please enter month salary first with selection of month and year!";
 const String monthYearExistanceErrorLbl = "Sorry ! Please add income first";
 const String monthlySalaryAddedLbl = "Monthly salary added successfully.";
 const String recordAddedLbl = "1 Record added successfully.";
@@ -51,7 +52,6 @@ const String customYrIncomeLbl = "Custom Year Income";
 const String currentYrRecordsLbl = "Current Year Records";
 const String customYrRecordsLbl = "Custom Year Records";
 
-
 // -------- Collections Name --------
 
 const String incomeLbl = 'total_income';
@@ -59,3 +59,6 @@ const String currentYearCollectionNameLbl = 'current_year_income_data';
 const String customYearCollectionNameLbl = 'custom_year_income_data';
 const String expensedLbl = 'Expensed';
 
+const String totalDebitedLbl = 'Total Debited   :\t';
+const String totalCreditedLbl = 'Total Credited  :\t';
+const String totalBalanceLbl = 'Total Balance  \t:\t\t';

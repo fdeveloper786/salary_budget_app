@@ -1,16 +1,19 @@
 class ViewRecordTileModel {
-  String? expendAmount;
-  String? expendType;
-  String? expendDate;
-  String? particularName;
-  String? paymentDate;
-  String? paymentStatus;
+  String? docId;
+  String? transDate;
+  String? transParticular;
+  String? transType;
+  String? transAmount;
+  String? transStatus;
+  String? transRemarks;
 
-  ViewRecordTileModel(
-      {this.expendAmount,
-      this.expendType,
-      this.expendDate,
-      this.particularName,
-      this.paymentDate,
-      this.paymentStatus});
+  ViewRecordTileModel({
+    this.docId,
+    this.transDate,
+    this.transParticular,
+    this.transType,
+    this.transAmount,
+    this.transStatus,
+    this.transRemarks,
+  });
 }
