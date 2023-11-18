@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:salary_budget/Data/Core/Utils/app_constants.dart';
 import 'package:salary_budget/Presentation/Screens/calculation/view/calculation_view.dart';
 import 'package:salary_budget/Presentation/Screens/view_record/controller/view_controller.dart';
 import 'package:salary_budget/Presentation/Screens/view_record/widgets/current_year_data.dart';
 import 'package:salary_budget/Presentation/Screens/view_record/widgets/custom_year_data.dart';
-import 'package:salary_budget/Data/Core/Utils/app_decoration.dart';
 
 class ViewRecordScreen extends StatelessWidget {
   ViewRecordController viewRecordController = Get.put(ViewRecordController());

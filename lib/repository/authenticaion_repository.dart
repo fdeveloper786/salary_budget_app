@@ -57,7 +57,7 @@ class AuthenticationRepository extends GetxController {
       return credentials.user != null ? true : false;
     } on FirebaseAuthException catch (e) {
       print("Failed otp $e");
-      Get.snackbar(errorLbl, wrongOtpLbl);
+       Get.snackbar(errorLbl, wrongOtpLbl);
     }
   }
 
