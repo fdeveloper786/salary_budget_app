@@ -8,3 +8,9 @@ extension CurrencyFormatting on String {
     return currencyFormat.format(valueAsDouble);
   }
 }
+
+extension RupeeSymbolExtension on String {
+  String withRupeeSymbol() {
+    return '₹$this';
+  }
+}

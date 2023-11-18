@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:salary_budget/Data/Core/Utils/image_utils.dart';
 import 'package:salary_budget/Domain/AppRoutes/routes.dart';
 import 'package:salary_budget/Presentation/Screens/HomeScreen/controller/home_controller.dart';
+import 'package:salary_budget/Presentation/Screens/add_record/view/add_record_view.dart';
+import 'package:salary_budget/Presentation/Screens/view_record/view/view_record_screen.dart';
 import 'package:salary_budget/Presentation/Widgets/chart/chart_container.dart';
 import 'package:salary_budget/Presentation/Widgets/chart/pie_chart.dart';
 import 'package:salary_budget/Presentation/Widgets/common_widgets/screen_buttons.dart';
@@ -102,8 +104,9 @@ class HomeScreen extends StatelessWidget {
                               child: ScreenButtons(
                                 btnLabel: "Add Record",
                                 onTap: () {
-                                  Navigator.of(context)
-                                      .pushNamed(AppRoutes.addRecordScreen);
+                                  /*Navigator.of(context)
+                                      .pushNamed(AppRoutes.addRecordScreen);*/
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=> AddRecordScreen()));
                                   print('Record added');
                                 },
                               ),
@@ -113,8 +116,10 @@ class HomeScreen extends StatelessWidget {
                                 btnLabel: "View Record",
                                 onTap: () {
                                   print('Record view');
-                                  Navigator.of(context)
-                                      .pushNamed(AppRoutes.viewRecordScreen);
+                                  /*Navigator.of(context)
+                                      .pushNamed(AppRoutes.viewRecordScreen);*/
+
+                                  Navigator.of(context).push(MaterialPageRoute(builder: (context)=> ViewRecordScreen()));
                                 },
                               ),
                             ),

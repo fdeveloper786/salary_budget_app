@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -5,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:salary_budget/Data/Core/Utils/app_constants.dart';
 import 'package:salary_budget/Domain/extensions/extensions.dart';
 import 'package:salary_budget/Presentation/Screens/view_record/view/view_record_tile_model.dart';
+import 'package:salary_budget/Presentation/Widgets/common_widgets/common_widgets.dart';
 import 'package:salary_budget/repository/authenticaion_repository.dart';
 import 'dart:developer' as developer;
 
@@ -15,7 +18,7 @@ class ViewRecordController extends GetxController {
   var fieldValue = "".obs;
   final List<String> radioOptions = [currentYrRecordsLbl, customYrRecordsLbl];
   RxInt selectedRadio =
-  RxInt(0); // Initially selecting the first option (index 0)
+      RxInt(0); // Initially selecting the first option (index 0)
 
   RxBool isMonthEnabled = true.obs;
   RxBool isYearEnabled = false.obs;
@@ -155,7 +158,7 @@ class ViewRecordController extends GetxController {
       final QuerySnapshot snapshot = await expensedData.get();
 
       docIdData.assignAll(
-        snapshot.docs.map((doc) => doc.id as String),
+        snapshot.docs.map((doc) => doc.id),
       );
       firestoreData.assignAll(
         snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>),
@@ -164,20 +167,19 @@ class ViewRecordController extends GetxController {
       for (int i = 0; i < firestoreData.length; i++) {
         firestoreData[i]['docId'] = docIdData[i];
       }
-      print(firestoreData);
-
       if (firestoreData.isNotEmpty) {
         for (var data in firestoreData) {
-          final expensedAmount = double.tryParse(data['amount']);
           recordList.add(ViewRecordTileModel(
             docId: data['docId'],
             transDate: data['transaction_date'],
             transParticular: data['particular'],
             transType: data['transaction_type'],
-            transAmount: expensedAmount!.toStringAsFixed(2).formatAsCurrency(),
+            transAmount: data['amount'],
             transStatus: data['payment_status'],
             transRemarks: data['remarks'],
           ));
+          double expensedAmount =
+              double.parse(data['amount'].replaceAll(',', ''));
           if (data['transaction_type'] == 'Debit') {
             debitedAmounts.add(expensedAmount);
             totalDebitedAmount.value = totalDebitedMethod(debitedAmounts);
@@ -191,11 +193,9 @@ class ViewRecordController extends GetxController {
               totalDebitedAmount.value,
               totalCreditedAmount.value);
         }
-      } else {
-        developer.log('--- ${firestoreData.length}');
       }
     } catch (e) {
-      developer.log('---$e');
+      developer.log('---catch logs${e}');
     }
     return recordList;
   }
@@ -228,6 +228,52 @@ class ViewRecordController extends GetxController {
       isIncomeNull.value = false;
     } else {
       isIncomeNull.value = true;
+    }
+  }
+
+  confirmToDeleteRecord(BuildContext context, String recordId) async {
+    if (selectedRadio.value == 0) {
+      log('selected 0 ');
+      await deleteRecord(
+          context,
+          currentYearCollectionNameLbl,
+          user_number,
+          currentDateYearController.text,
+          currentDateMonthController.text,
+          recordId);
+    } else {
+      log('selected 1');
+      await deleteRecord(
+          context,
+          customYearCollectionNameLbl,
+          user_number,
+          customDateYearController.text,
+          customDateMonthController.text,
+          recordId);
+    }
+  }
+
+  Future<void> deleteRecord(BuildContext ctx, collectionName, userNumber, year,
+      month, documentId) async {
+    try {
+      WidgetsHelper.onSubmitData(ctx, 'Deleting...');
+
+      // Assuming 'your_collection' is the name of your Firestore collection
+      await FirebaseFirestore.instance
+          .collection(collectionName)
+          .doc(userNumber)
+          .collection(year)
+          .doc(month)
+          .collection(expensedLbl)
+          .doc(documentId)
+          .delete();
+      // Optionally, you can show a success message or perform other actions
+      print('Record deleted successfully');
+      Navigator.of(ctx).pop();
+    } catch (e) {
+      // Handle errors
+      print('Error deleting record: $e');
+      Navigator.of(ctx).pop();
     }
   }
 }
