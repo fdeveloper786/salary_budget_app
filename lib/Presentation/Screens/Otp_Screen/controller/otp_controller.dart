@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:salary_budget/Data/Core/Utils/app_constants.dart';
+import 'package:salary_budget/Presentation/Screens/HomeScreen/controller/home_controller.dart';
 import 'package:salary_budget/Presentation/Screens/HomeScreen/home_screen.dart';
 import 'package:salary_budget/Presentation/Screens/Login/login_screen.dart';
 import 'package:salary_budget/Presentation/Widgets/common_widgets/common_widgets.dart';
@@ -18,6 +19,7 @@ class OTPController extends GetxController {
     try {
       isVerified = await AuthenticationRepository.instance.verifyOTP(otpCode);
       print("----- is verified ---- $isVerified");
+
       if (isVerified != null) {
         WidgetsHelper.onLoadingPage(context);
         Future.delayed(const Duration(seconds: 3), () {
@@ -25,6 +27,9 @@ class OTPController extends GetxController {
           if (isVerified!) {
             savedMobileNumber.value =
                 AuthenticationRepository.instance.phoneNumber.value;
+            print('---mobile---------------${savedMobileNumber.value}');
+            Get.put(HomeController()).displayName.value =
+                savedMobileNumber.value;
             setSession(savedMobileNumber.value);
             Get.offAll(HomeScreen());
           } else {

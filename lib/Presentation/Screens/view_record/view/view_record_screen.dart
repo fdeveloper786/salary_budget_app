@@ -12,6 +12,7 @@ class ViewRecordScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           title: const Text('View Record'),
         ),bottomNavigationBar: CalculationNavbar(
@@ -82,7 +83,6 @@ class ViewRecordScreen extends StatelessWidget {
   }
 
   Widget dataTable() {
-    print('--${viewRecordController.recordList.length}');
     return Obx(() {
       return Visibility(
         visible: viewRecordController.isIncomeNull.value,

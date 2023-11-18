@@ -25,7 +25,9 @@ class HomeController extends GetxController {
   Future<String?> getUserName() async {
     try {
       displayName.value =
+
       await AuthenticationRepository.instance.loggedUserName();
+
       return displayName.value;
     } catch (e) {
       print('e $e');
@@ -73,4 +75,6 @@ class HomeController extends GetxController {
     currentMonthName.value = monthName;
     return currentMonthName.value;
   }
+
 }
+

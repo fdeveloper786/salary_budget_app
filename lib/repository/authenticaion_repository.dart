@@ -57,7 +57,7 @@ class AuthenticationRepository extends GetxController {
       return credentials.user != null ? true : false;
     } on FirebaseAuthException catch (e) {
       print("Failed otp $e");
-      Get.snackbar(errorLbl, wrongOtpLbl);
+       Get.snackbar(errorLbl, wrongOtpLbl);
     }
   }
 
@@ -137,6 +137,7 @@ class AuthenticationRepository extends GetxController {
       );
       final UserCredential authResult =
       await _auth.signInWithCredential(credential);
+
       final User? user = authResult.user;
       storeUserDetails(user!.email!, user!.displayName!);
       developer.log('----google user auth ----$user');

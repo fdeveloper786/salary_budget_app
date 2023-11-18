@@ -9,4 +9,5 @@ class AssetsUtils {
 
   // ------- PNG Const -------- //
   static const String appIconPng = "$pngPath/app_icon.png";
+  static const String googleIconPng = "$pngPath/google_icon.png";
 }
