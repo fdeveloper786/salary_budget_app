@@ -130,13 +130,14 @@ class AuthenticationRepository extends GetxController {
     try {
       final GoogleSignInAccount? googleUser = await googleSignIn.signIn();
       final GoogleSignInAuthentication googleAuth =
-          await googleUser!.authentication;
+      await googleUser!.authentication;
       final AuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
       final UserCredential authResult =
-          await _auth.signInWithCredential(credential);
+      await _auth.signInWithCredential(credential);
+
       final User? user = authResult.user;
       storeUserDetails(user!.email!, user!.displayName!);
       developer.log('----google user auth ----$user');
@@ -170,7 +171,7 @@ class AuthenticationRepository extends GetxController {
     try {
       print('---printing3 name');
       DocumentSnapshot documentSnapshot =
-          await _firestore.collection('users').doc(uniqueId).get();
+      await _firestore.collection('users').doc(uniqueId).get();
       if (documentSnapshot.exists) {
         displayName = documentSnapshot.get('username');
         developer.log('---user $displayName');

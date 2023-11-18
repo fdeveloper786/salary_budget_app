@@ -15,8 +15,9 @@ class CustomRichText extends StatelessWidget {
         text: TextSpan(
             style: DefaultTextStyle.of(context).style,
             children: <TextSpan>[
-          TextSpan(text: text, style: textStyle),
-          TextSpan(text: value, style: valueStyle),
-        ]));
+              TextSpan(text: text, style: textStyle),
+              TextSpan(text: value, style: valueStyle),
+            ]));
   }
 }
+

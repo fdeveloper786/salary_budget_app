@@ -15,7 +15,7 @@ class ViewRecordController extends GetxController {
   var fieldValue = "".obs;
   final List<String> radioOptions = [currentYrRecordsLbl, customYrRecordsLbl];
   RxInt selectedRadio =
-      RxInt(0); // Initially selecting the first option (index 0)
+  RxInt(0); // Initially selecting the first option (index 0)
 
   RxBool isMonthEnabled = true.obs;
   RxBool isYearEnabled = false.obs;
@@ -61,6 +61,7 @@ class ViewRecordController extends GetxController {
   // Format the current date to display the month name
   String monthName = DateFormat('MMM').format(DateTime.now());
   RxList<Map<String, dynamic>> firestoreData = RxList<Map<String, dynamic>>();
+  RxList<dynamic> docIdData = RxList<dynamic>();
   List<ViewRecordTileModel> recordList = <ViewRecordTileModel>[].obs;
 
   @override
@@ -152,12 +153,24 @@ class ViewRecordController extends GetxController {
           .doc(month)
           .collection(expensedLbl);
       final QuerySnapshot snapshot = await expensedData.get();
+
+      docIdData.assignAll(
+        snapshot.docs.map((doc) => doc.id as String),
+      );
       firestoreData.assignAll(
-          snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>));
+        snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>),
+      );
+      // Adding IDs to each map in the list
+      for (int i = 0; i < firestoreData.length; i++) {
+        firestoreData[i]['docId'] = docIdData[i];
+      }
+      print(firestoreData);
+
       if (firestoreData.isNotEmpty) {
         for (var data in firestoreData) {
           final expensedAmount = double.tryParse(data['amount']);
           recordList.add(ViewRecordTileModel(
+            docId: data['docId'],
             transDate: data['transaction_date'],
             transParticular: data['particular'],
             transType: data['transaction_type'],
@@ -165,7 +178,6 @@ class ViewRecordController extends GetxController {
             transStatus: data['payment_status'],
             transRemarks: data['remarks'],
           ));
-
           if (data['transaction_type'] == 'Debit') {
             debitedAmounts.add(expensedAmount);
             totalDebitedAmount.value = totalDebitedMethod(debitedAmounts);

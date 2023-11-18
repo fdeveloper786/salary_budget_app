@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:salary_budget/Presentation/Screens/calculation/view/calculation_view.dart';
+import 'package:salary_budget/Presentation/Screens/view_record/view/calculation_view.dart';
 import 'package:salary_budget/Presentation/Screens/view_record/controller/view_controller.dart';
 import 'package:salary_budget/Presentation/Screens/view_record/widgets/current_year_data.dart';
 import 'package:salary_budget/Presentation/Screens/view_record/widgets/custom_year_data.dart';
+
 
 class ViewRecordScreen extends StatelessWidget {
   ViewRecordController viewRecordController = Get.put(ViewRecordController());
@@ -14,11 +15,9 @@ class ViewRecordScreen extends StatelessWidget {
         backgroundColor: Colors.white,
         appBar: AppBar(
           title: const Text('View Record'),
-          backgroundColor: Colors.white,
-        ),
-        bottomNavigationBar: CalculationNavbar(
-          viewRecordController: viewRecordController,
-        ),
+        ),bottomNavigationBar: CalculationNavbar(
+      viewRecordController: viewRecordController,
+    ),
         body: Stack(
           children: [
             SingleChildScrollView(
