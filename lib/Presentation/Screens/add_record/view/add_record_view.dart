@@ -116,12 +116,14 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                   addRecordController.currentDateMonthController,
               yearDocName: addRecordController.currentDateYearController,
               formKey: addRecordController.currAddRecordFormKey,
-              expAmntController: addRecordController.expAmountController,
-              expTypeController: addRecordController.expTypeController,
-              expDateController: addRecordController.expDateController,
-              expPartController: addRecordController.expParticularController,
-              expPayDateController: addRecordController.payDateController,
-              expStatusController: addRecordController.payStatusController,
+              transDateController: addRecordController.currTransDateController,
+              transPartController:
+                  addRecordController.currTransParticularController,
+              transTypeController: addRecordController.currTransTypeController,
+              transAmntController: addRecordController.currAmountController,
+              transPayStatusController:
+                  addRecordController.currPayStatusController,
+              transRemarksController: addRecordController.currRemarksController,
               ctx: context,
             )
           : ExpensesForm(
@@ -131,13 +133,14 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
                   addRecordController.customDateMonthController,
               yearDocName: addRecordController.customDateYearController,
               formKey: addRecordController.custAddRecordFormKey,
-              expAmntController: addRecordController.custExpAmountController,
-              expTypeController: addRecordController.custExpTypeController,
-              expDateController: addRecordController.custExpDateController,
-              expPartController:
-                  addRecordController.custExpParticularController,
-              expPayDateController: addRecordController.custPayDateController,
-              expStatusController: addRecordController.custPayStatusController,
+              transDateController: addRecordController.custTransDateController,
+              transPartController:
+                  addRecordController.custTransParticularController,
+              transTypeController: addRecordController.custTransTypeController,
+              transAmntController: addRecordController.custAmountController,
+              transPayStatusController:
+                  addRecordController.custPayStatusController,
+              transRemarksController: addRecordController.custRemarksController,
               ctx: context,
             );
     });

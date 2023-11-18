@@ -38,18 +38,18 @@ class AddRecordController extends GetxController {
   final customDateMonthController = TextEditingController();
   final customDateYearController = TextEditingController();
 
-  final expAmountController = TextEditingController();
-  final expTypeController = TextEditingController();
-  final expDateController = TextEditingController();
-  final expParticularController = TextEditingController();
-  final payDateController = TextEditingController();
-  final payStatusController = TextEditingController();
+  final currAmountController = TextEditingController();
+  final currTransTypeController = TextEditingController();
+  final currTransDateController = TextEditingController();
+  final currTransParticularController = TextEditingController();
+  final currRemarksController = TextEditingController();
+  final currPayStatusController = TextEditingController();
 
-  final custExpAmountController = TextEditingController();
-  final custExpTypeController = TextEditingController();
-  final custExpDateController = TextEditingController();
-  final custExpParticularController = TextEditingController();
-  final custPayDateController = TextEditingController();
+  final custAmountController = TextEditingController();
+  final custTransTypeController = TextEditingController();
+  final custTransDateController = TextEditingController();
+  final custTransParticularController = TextEditingController();
+  final custRemarksController = TextEditingController();
   final custPayStatusController = TextEditingController();
 
   // Get the current year
@@ -85,13 +85,12 @@ class AddRecordController extends GetxController {
   var expTypeList = [
     'Credit',
     'Debit',
-    'Borrow',
   ].obs;
 
   @override
   void onInit() async {
     super.onInit();
-    user_number = await AuthenticationRepository.instance.userLoggedNumber();
+    user_number = await AuthenticationRepository.instance.loggedUserName();
     currentDateYearController.text = currentYear.toString();
     currentDateMonthController.text = monthName.toString();
     checkExistingMonthlyIncome(
@@ -116,19 +115,19 @@ class AddRecordController extends GetxController {
 
   clearTextField() {
     if (selectedRadio.value.isEqual(0)) {
-      expAmountController.clear();
-      expTypeController.clear();
-      expDateController.clear();
-      expParticularController.clear();
-      payDateController.clear();
-      payStatusController.clear();
+      currAmountController.clear();
+      currTransTypeController.clear();
+      currTransDateController.clear();
+      currTransParticularController.clear();
+      currRemarksController.clear();
+      currPayStatusController.clear();
     } else {
       // CustomDate controller clear
-      custExpAmountController.clear();
-      custExpTypeController.clear();
-      custExpDateController.clear();
-      custExpParticularController.clear();
-      custPayDateController.clear();
+      custAmountController.clear();
+      custTransTypeController.clear();
+      custTransDateController.clear();
+      custTransParticularController.clear();
+      custRemarksController.clear();
       custPayStatusController.clear();
     }
   }
@@ -253,16 +252,17 @@ class AddRecordController extends GetxController {
   }
 
   checkPath(
-      BuildContext ctx,
-      String collectionName,
-      String monthCollectionName,
-      String yearDocName,
-      String expAmnt,
-      String expType,
-      String expDate,
-      String expParticular,
-      String payDate,
-      String payStatus) async {
+    BuildContext ctx,
+    String collectionName,
+    String monthCollectionName,
+    String yearDocName,
+    String transPayDate,
+    String transParticular,
+    String transType,
+    String transAmnt,
+    String transPayStatus,
+    String transRemarks,
+  ) async {
     try {
       final DocumentSnapshot snapShot = await FirebaseFirestore.instance
           .collection(collectionName)
@@ -273,12 +273,12 @@ class AddRecordController extends GetxController {
 
       if (snapShot.exists) {
         await snapShot.reference.collection(expensedLbl).doc().set({
-          'expensed_amount': expAmnt, //'30 Sept 2023',
-          'expensed_type': expType,
-          'expensed_date': expDate,
-          'expensed_particular': expParticular,
-          'payment_date': payDate,
-          'payment_status': payStatus,
+          'transaction_date': transPayDate,
+          'particular': transParticular,
+          'transaction_type': transType,
+          'amount': transAmnt,
+          'payment_status': transPayStatus,
+          'remarks': transRemarks,
         }).then((result) {
           onLoading(ctx, recordAddedLbl);
           isMonthEnabled.value = true;
@@ -296,30 +296,32 @@ class AddRecordController extends GetxController {
 
   // Form submission function
   void submitRecordForm(
-      BuildContext ctx,
-      String collectionName,
-      monthCollectionName,
-      yearDocName,
-      formKey,
-      expAmntController,
-      expTypeController,
-      expDateController,
-      expPrtController,
-      expPayDtController,
-      expStController) async {
+    BuildContext ctx,
+    String collectionName,
+    monthCollectionName,
+    yearDocName,
+    formKey,
+    transDateController,
+    transPrtController,
+    transTypeController,
+    transAmntController,
+    transStController,
+    transRemarksController,
+  ) async {
     if (formKey.currentState!.validate()) {
       formKey.currentState!.save();
       checkPath(
-          ctx,
-          collectionName,
-          monthCollectionName,
-          yearDocName,
-          expAmntController,
-          expTypeController,
-          expDateController,
-          expPrtController,
-          expPayDtController,
-          expStController);
+        ctx,
+        collectionName,
+        monthCollectionName,
+        yearDocName,
+        transDateController,
+        transPrtController,
+        transTypeController,
+        transAmntController,
+        transStController,
+        transRemarksController,
+      );
     }
   }
 
@@ -340,11 +342,11 @@ class AddRecordController extends GetxController {
     currentDateYearController.dispose();
     customDateMonthController.dispose();
     customDateYearController.dispose();
-    expAmountController.dispose();
-    expTypeController.dispose();
-    expDateController.dispose();
-    expParticularController.dispose();
-    payDateController.dispose();
-    payStatusController.dispose();
+    currAmountController.dispose();
+    currTransTypeController.dispose();
+    currTransDateController.dispose();
+    currTransParticularController.dispose();
+    currRemarksController.dispose();
+    currPayStatusController.dispose();
   }
 }

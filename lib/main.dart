@@ -28,7 +28,6 @@ void main() async {
     await Firebase.initializeApp()
         .then((value) => Get.put(AuthenticationRepository()));
   }
-
   isLoggedIn = await AuthenticationRepository.instance.isUserLoggedIn();
   print('is user logged in ${isLoggedIn}');
   SystemChrome.setPreferredOrientations([

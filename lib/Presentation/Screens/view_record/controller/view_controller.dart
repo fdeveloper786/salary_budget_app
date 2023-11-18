@@ -23,6 +23,12 @@ class ViewRecordController extends GetxController {
   RxBool isCurrentSalaryEnteredEnabled = false.obs;
   RxBool isPreviousSalaryEnteredEnabled = false.obs;
   RxBool isMonthYearSelected = false.obs;
+  List<double> debitedAmounts = [];
+  List<double> creditedAmounts = [];
+  var totalDebitedAmount = 0.00.obs;
+  var totalCreditedAmount = 0.00.obs;
+  var totalBalance = 0.00.obs;
+
   var monthList = [
     'Jan',
     'Feb',
@@ -60,7 +66,7 @@ class ViewRecordController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
-    user_number = await AuthenticationRepository.instance.userLoggedNumber();
+    user_number = await AuthenticationRepository.instance.loggedUserName();
     currentDateYearController.text = currentYear.toString();
     currentDateMonthController.text = monthName.toString();
     checkExistingMonthlyIncome(
@@ -77,6 +83,11 @@ class ViewRecordController extends GetxController {
       customSalaryController.clear();
     } else {
       recordList.clear();
+      debitedAmounts.clear();
+      creditedAmounts.clear();
+      totalDebitedAmount.value = 0.00;
+      totalCreditedAmount.value = 0.00;
+      totalBalance.value = 0.00;
       fieldValue.value = '';
       checkIncome(fieldValue.value);
     }
@@ -86,6 +97,11 @@ class ViewRecordController extends GetxController {
       String monthName, String yearNo) async {
     try {
       recordList.clear();
+      debitedAmounts.clear();
+      creditedAmounts.clear();
+      totalDebitedAmount.value = 0.00;
+      totalCreditedAmount.value = 0.00;
+      totalBalance.value = 0.00;
       if (selectedRadio.value == 0) {
         CollectionReference incomeData = _firestore
             .collection(currentYearCollectionNameLbl)
@@ -124,6 +140,11 @@ class ViewRecordController extends GetxController {
       collectionName, userNumber, year, month) async {
     try {
       recordList.clear();
+      debitedAmounts.clear();
+      creditedAmounts.clear();
+      totalDebitedAmount.value = 0.00;
+      totalCreditedAmount.value = 0.00;
+      totalBalance.value = 0.00;
       CollectionReference expensedData = FirebaseFirestore.instance
           .collection(collectionName)
           .doc(userNumber)
@@ -135,16 +156,28 @@ class ViewRecordController extends GetxController {
           snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>));
       if (firestoreData.isNotEmpty) {
         for (var data in firestoreData) {
-          final expensedAmount = data['expensed_amount'];
+          final expensedAmount = double.tryParse(data['amount']);
           recordList.add(ViewRecordTileModel(
-              expendAmount: double.tryParse(expensedAmount)!
-                  .toStringAsFixed(2)
-                  .formatAsCurrency(), //data['expensed_amount'],
-              expendDate: data['expensed_date'],
-              expendType: data['expensed_type'],
-              particularName: data['expensed_particular'],
-              paymentDate: data['payment_date'],
-              paymentStatus: data['payment_status']));
+            transDate: data['transaction_date'],
+            transParticular: data['particular'],
+            transType: data['transaction_type'],
+            transAmount: expensedAmount!.toStringAsFixed(2).formatAsCurrency(),
+            transStatus: data['payment_status'],
+            transRemarks: data['remarks'],
+          ));
+
+          if (data['transaction_type'] == 'Debit') {
+            debitedAmounts.add(expensedAmount);
+            totalDebitedAmount.value = totalDebitedMethod(debitedAmounts);
+          }
+          if (data['transaction_type'] == 'Credit') {
+            creditedAmounts.add(expensedAmount);
+            totalCreditedAmount.value = totalCreditedMethod(creditedAmounts);
+          }
+          totalBalance.value = totalBalanceMethod(
+              double.tryParse(fieldValue.value),
+              totalDebitedAmount.value,
+              totalCreditedAmount.value);
         }
       } else {
         developer.log('--- ${firestoreData.length}');
@@ -153,6 +186,29 @@ class ViewRecordController extends GetxController {
       developer.log('---$e');
     }
     return recordList;
+  }
+
+  totalDebitedMethod(List<double> debitedAmount) {
+    double totalDebited = 0.00;
+    for (double amount in debitedAmount) {
+      totalDebited += amount;
+    }
+    return totalDebited;
+  }
+
+  totalCreditedMethod(List<double> creditedAmount) {
+    double totalCredited = 0.00;
+    for (double amount in creditedAmount) {
+      totalCredited += amount;
+    }
+    return totalCredited;
+  }
+
+  totalBalanceMethod(
+      double? totalIncome, double? totalDebit, double? totalCredit) {
+    double totalBalance = 0.00;
+    totalBalance = (totalIncome! - totalDebit!) + totalCredit!;
+    return totalBalance;
   }
 
   checkIncome(incomeVal) {
