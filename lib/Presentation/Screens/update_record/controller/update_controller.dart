@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -87,6 +86,7 @@ class UpdateController extends GetxController {
       DocumentSnapshot documentSnapshot = await documentReference.get();
       if (documentSnapshot.exists) {
         await documentReference.update(dataToUpdate);
+        await ViewRecordController.instance.getData(collectionName,userNumber,year,month);
         Navigator.of(ctx).pop();
         Get.back();
         clearTextField();

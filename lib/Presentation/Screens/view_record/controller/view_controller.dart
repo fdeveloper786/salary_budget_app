@@ -115,7 +115,7 @@ class ViewRecordController extends GetxController {
         if (document.exists) {
           fieldValue.value = document.get(incomeLbl);
           checkIncome(fieldValue.value);
-          getData(currentYearCollectionNameLbl, user_number, yearNo, monthName);
+          await getData(currentYearCollectionNameLbl, user_number, yearNo, monthName);
         } else {
           fieldValue.value = '';
           isIncomeNull.value = false;
@@ -129,7 +129,7 @@ class ViewRecordController extends GetxController {
         if (document.exists) {
           fieldValue.value = document.get(incomeLbl);
           checkIncome(fieldValue.value);
-          getData(customYearCollectionNameLbl, user_number, yearNo, monthName);
+          await getData(customYearCollectionNameLbl, user_number, yearNo, monthName);
         } else {
           fieldValue.value = '';
           isIncomeNull.value = false;
@@ -269,6 +269,7 @@ class ViewRecordController extends GetxController {
           .delete();
       // Optionally, you can show a success message or perform other actions
       print('Record deleted successfully');
+      await getData(collectionName, userNumber, year, month);
       Navigator.of(ctx).pop();
     } catch (e) {
       // Handle errors
