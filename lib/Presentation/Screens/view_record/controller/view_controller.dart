@@ -37,6 +37,7 @@ class ViewRecordController extends GetxController {
     'Feb',
     'Mar',
     'Apr',
+    'May',
     'Jun',
     'Jul',
     'Aug',
