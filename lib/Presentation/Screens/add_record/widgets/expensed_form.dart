@@ -670,7 +670,8 @@ class ExpensesForm extends StatelessWidget {
                 return Visibility(
                   visible: controller.fieldValue.value.isEmpty ? false : true,
                   child: Center(
-                    child: ScreenButtons(
+                    child:
+                    ScreenButtons(
                         btnLabel: "Add Record",
                         onTap: () {
                           controller.submitRecordForm(

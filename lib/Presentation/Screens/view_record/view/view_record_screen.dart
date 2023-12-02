@@ -1,10 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:salary_budget/Domain/extensions/extensions.dart';
+import 'package:salary_budget/Presentation/Screens/update_record/view/update_record_view.dart';
 import 'package:salary_budget/Presentation/Screens/view_record/view/calculation_view.dart';
 import 'package:salary_budget/Presentation/Screens/view_record/controller/view_controller.dart';
 import 'package:salary_budget/Presentation/Screens/view_record/widgets/current_year_data.dart';
 import 'package:salary_budget/Presentation/Screens/view_record/widgets/custom_year_data.dart';
-
 
 class ViewRecordScreen extends StatelessWidget {
   ViewRecordController viewRecordController = Get.put(ViewRecordController());
@@ -12,12 +15,12 @@ class ViewRecordScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.white,
         appBar: AppBar(
           title: const Text('View Record'),
-        ),bottomNavigationBar: CalculationNavbar(
-      viewRecordController: viewRecordController,
-    ),
+        ),
+        bottomNavigationBar: CalculationNavbar(
+          viewRecordController: viewRecordController,
+        ),
         body: Stack(
           children: [
             SingleChildScrollView(
@@ -33,7 +36,7 @@ class ViewRecordScreen extends StatelessWidget {
                     children: [
                       selectRadioButton(),
                       viewReceivedIncome(context),
-                      dataTable(),
+                      dataTable(context),
                     ],
                   ),
                 ),
@@ -82,7 +85,7 @@ class ViewRecordScreen extends StatelessWidget {
     });
   }
 
-  Widget dataTable() {
+  Widget dataTable(BuildContext screenContext) {
     return Obx(() {
       return Visibility(
         visible: viewRecordController.isIncomeNull.value,
@@ -113,6 +116,18 @@ class ViewRecordScreen extends StatelessWidget {
                       DataColumn(
                         label: Text('Remarks'),
                       ),
+                      DataColumn(
+                        label: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text('Update'),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            Text('Delete'),
+                          ],
+                        ),
+                      ),
                     ],
                     rows: viewRecordController.recordList.map((data) {
                       return DataRow(cells: <DataCell>[
@@ -121,9 +136,72 @@ class ViewRecordScreen extends StatelessWidget {
                         ),
                         DataCell(Text(data.transParticular.toString())),
                         DataCell(Text(data.transType.toString())),
-                        DataCell(Text(data.transAmount.toString())),
+                        DataCell(Text(data.transAmount!.withRupeeSymbol())),
                         DataCell(Text(data.transStatus.toString())),
                         DataCell(Text(data.transRemarks.toString())),
+                        DataCell(Row(
+                          children: [
+                            IconButton(
+                              onPressed: () {
+                                log('updated ${viewRecordController.selectedRadio.value}');
+                                Navigator.of(screenContext).push(
+                                    MaterialPageRoute(
+                                        builder: (screenContext) =>
+                                            UpdateRecord(
+                                                viewRecordController:
+                                                    viewRecordController,
+                                                recordId: data.docId,
+                                                trDate:
+                                                    data.transDate.toString(),
+                                                particular:
+                                                    data.transParticular,
+                                                transType: data.transType,
+                                                amount: data.transAmount,
+                                                status: data.transStatus,
+                                                remarks: data.transRemarks)));
+                              },
+                              icon: Icon(
+                                Icons.edit,
+                                color: Colors.blue,
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () {
+                                log('deleted');
+                                /*viewRecordController.confirmToDeleteRecord(
+                                    screenContext, data.docId!);*/
+                                showDialog(
+                                    context: screenContext,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: Text('Confirm Deletion'),
+                                        content: Text(
+                                            'Are you sure want to delete this record?'),
+                                        actions: [
+                                          TextButton(
+                                              onPressed: () =>
+                                                  Navigator.of(context).pop(),
+                                              child: Text('Cancel')),
+                                          TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop();
+                                                viewRecordController
+                                                    .confirmToDeleteRecord(
+                                                        screenContext,
+                                                        data.docId!);
+                                              },
+                                              child: Text('Delete'))
+                                        ],
+                                      );
+                                    });
+                              },
+                              icon: Icon(
+                                Icons.delete,
+                                color: Colors.red,
+                              ),
+                            ),
+                          ],
+                        )),
                       ]);
                     }).toList(),
                   )),
