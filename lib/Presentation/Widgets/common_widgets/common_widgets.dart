@@ -22,7 +22,7 @@ class WidgetsHelper {
     );
   }
 
-  static void onLoadingPage(context) {
+  static void onLoadingPage(context, [String? msg]) {
     AlertDialog alertDialog = AlertDialog(
       content: Row(
         children: <Widget>[
@@ -30,7 +30,7 @@ class WidgetsHelper {
           const SizedBox(
             width: 30,
           ),
-          const Text("Please Wait..."),
+          Text(msg ?? 'Please wait...'),
         ],
       ),
     );
@@ -44,7 +44,26 @@ class WidgetsHelper {
     });
   }
 
-  static void errorAlertBox(context,errorMsg) {
+  static void onSubmitData(context, [String? msg]) {
+    AlertDialog alertDialog = AlertDialog(
+      content: Row(
+        children: <Widget>[
+          const CircularProgressIndicator(),
+          const SizedBox(
+            width: 30,
+          ),
+          Text(msg ?? 'Please wait...'),
+        ],
+      ),
+    );
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => alertDialog,
+    );
+  }
+
+  static void errorAlertBox(context, errorMsg) {
     AlertDialog alertDialog = AlertDialog(
       content: Container(
         height: 50,
@@ -61,7 +80,10 @@ class WidgetsHelper {
               // Close the alert dialog
               Navigator.of(context).pop();
             },
-            child: Text('Ok',style: AppStyle.txtBlack18,))
+            child: Text(
+              'Ok',
+              style: AppStyle.txtBlack18,
+            ))
       ],
     );
     showDialog(

@@ -9,12 +9,8 @@ extension CurrencyFormatting on String {
   }
 }
 
-extension StringToDouble on String {
-  double toDoubleOrDefault(double defaultValue) {
-    try {
-      return double.parse(this);
-    } catch (e) {
-      return defaultValue;
-    }
+extension RupeeSymbolExtension on String {
+  String withRupeeSymbol() {
+    return '₹$this';
   }
 }
