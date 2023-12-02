@@ -1,7 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:salary_budget/Data/Core/Utils/app_decoration.dart';
 
 class WidgetsHelper {
+
+  static void customSnackbar(
+      String message,
+      String actionMessage,
+      Color backgroundColor,
+      Color textColor,
+      int duration,
+      VoidCallback onTap,
+      ) {
+    Get.snackbar(
+      message,
+      '',
+      backgroundColor: backgroundColor,
+      colorText: textColor,
+      snackPosition: SnackPosition.TOP,
+      duration: Duration(seconds: duration),
+      mainButton: TextButton(
+        onPressed: onTap,
+        child: Text(actionMessage,style: TextStyle(color: Colors.white,fontSize: 16),),
+      ),
+    );
+  }
   // Screen loader
   static void onLoading(context) {
     AlertDialog alertDialog = AlertDialog(

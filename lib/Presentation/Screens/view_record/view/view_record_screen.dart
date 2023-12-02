@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:salary_budget/Domain/extensions/extensions.dart';
@@ -8,9 +7,12 @@ import 'package:salary_budget/Presentation/Screens/view_record/view/calculation_
 import 'package:salary_budget/Presentation/Screens/view_record/controller/view_controller.dart';
 import 'package:salary_budget/Presentation/Screens/view_record/widgets/current_year_data.dart';
 import 'package:salary_budget/Presentation/Screens/view_record/widgets/custom_year_data.dart';
+import 'package:salary_budget/Presentation/Screens/download_record/download_record_controller.dart';
 
 class ViewRecordScreen extends StatelessWidget {
   ViewRecordController viewRecordController = Get.put(ViewRecordController());
+
+  PDFGeneratorController pdfGeneratorController = Get.put(PDFGeneratorController());
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +23,20 @@ class ViewRecordScreen extends StatelessWidget {
         bottomNavigationBar: CalculationNavbar(
           viewRecordController: viewRecordController,
         ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+        floatingActionButton: Obx(() {
+          return Visibility(
+            visible: viewRecordController.isIncomeNull.value,
+            child: viewRecordController.recordList.isNotEmpty
+                ? FloatingActionButton(
+                    onPressed: () async {
+                      viewRecordController.downloadStatement(context);
+                    },
+                    child: Icon(Icons.download),
+                  )
+                : const SizedBox(),
+          );
+        }),
         body: Stack(
           children: [
             SingleChildScrollView(
@@ -89,7 +105,10 @@ class ViewRecordScreen extends StatelessWidget {
     return Obx(() {
       return Visibility(
         visible: viewRecordController.isIncomeNull.value,
-        child: SingleChildScrollView(
+        child: viewRecordController.isLoading.value ?
+            Center(child: CircularProgressIndicator(),)
+        :
+        SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: (viewRecordController.recordList.length == 0)
                 ? Center(
@@ -136,7 +155,7 @@ class ViewRecordScreen extends StatelessWidget {
                         ),
                         DataCell(Text(data.transParticular.toString())),
                         DataCell(Text(data.transType.toString())),
-                        DataCell(Text(data.transAmount!.withRupeeSymbol())),
+                        DataCell(Text(data.transAmount!.formatRupees())),
                         DataCell(Text(data.transStatus.toString())),
                         DataCell(Text(data.transRemarks.toString())),
                         DataCell(Row(

@@ -62,3 +62,5 @@ const String expensedLbl = 'Expensed';
 const String totalDebitedLbl = 'Total Debited   :\t';
 const String totalCreditedLbl = 'Total Credited  :\t';
 const String totalBalanceLbl = 'Total Balance  \t:\t\t';
+
+const String androidPathLbl = '/storage/emulated/0/Download';
