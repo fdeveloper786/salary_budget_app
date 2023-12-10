@@ -1,25 +1,27 @@
 import 'dart:developer';
-
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:salary_budget/Data/Core/Utils/app_constants.dart';
-import 'package:salary_budget/Domain/extensions/extensions.dart';
 import 'package:salary_budget/Presentation/Screens/view_record/view/view_record_tile_model.dart';
+import 'package:salary_budget/Presentation/Screens/download_record/download_record_controller.dart';
+import 'package:salary_budget/Presentation/Screens/download_record/pdf_viewer.dart';
 import 'package:salary_budget/Presentation/Widgets/common_widgets/common_widgets.dart';
 import 'package:salary_budget/repository/authenticaion_repository.dart';
 import 'dart:developer' as developer;
 
 class ViewRecordController extends GetxController {
   static ViewRecordController get instance => Get.find();
+  PDFGeneratorController pdfGeneratorController = Get.put(PDFGeneratorController());
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   var fieldValue = "".obs;
   final List<String> radioOptions = [currentYrRecordsLbl, customYrRecordsLbl];
   RxInt selectedRadio =
       RxInt(0); // Initially selecting the first option (index 0)
-
+  RxBool isLoading = false.obs;
   RxBool isMonthEnabled = true.obs;
   RxBool isYearEnabled = false.obs;
   RxBool isIncomeNull = false.obs;
@@ -144,6 +146,7 @@ class ViewRecordController extends GetxController {
   Future<List<ViewRecordTileModel>> getData(
       collectionName, userNumber, year, month) async {
     try {
+      isLoading.value = true;
       recordList.clear();
       debitedAmounts.clear();
       creditedAmounts.clear();
@@ -179,6 +182,7 @@ class ViewRecordController extends GetxController {
             transStatus: data['payment_status'],
             transRemarks: data['remarks'],
           ));
+
           double expensedAmount =
               double.parse(data['amount'].replaceAll(',', ''));
           if (data['transaction_type'] == 'Debit') {
@@ -194,6 +198,9 @@ class ViewRecordController extends GetxController {
               totalDebitedAmount.value,
               totalCreditedAmount.value);
         }
+        // Sort recordList based on transDate
+        recordList.sort((a, b) => a.transDate!.compareTo(b.transDate!));
+        isLoading.value = false;
       }
     } catch (e) {
       developer.log('---catch logs${e}');
@@ -278,4 +285,39 @@ class ViewRecordController extends GetxController {
       Navigator.of(ctx).pop();
     }
   }
+
+  // Download Transaction Statement
+  void downloadStatement(BuildContext ctx) async {
+    try {
+      File? pdfFile; // Use File? to denote that pdfFile can be null
+
+      if (selectedRadio.value.isEqual(0) ?? false) {
+            pdfFile = await pdfGeneratorController.generatePDF(ctx,user_number, currentDateMonthController.text,currentDateYearController.text, totalDebitedAmount.value,totalCreditedAmount.value,totalBalance.value,recordList);
+            log('downloaded path ${pdfFile!.path}');
+          } else {
+            pdfFile = await pdfGeneratorController.generatePDF(ctx,user_number, customDateMonthController.text,customDateYearController.text, totalDebitedAmount.value,totalCreditedAmount.value,totalBalance.value,recordList);
+          }
+
+      if (pdfFile != null) {
+            // File is not null, proceed with further actions
+            WidgetsHelper.customSnackbar(
+              'File downloaded',
+              'Tap to view',
+              Colors.green,
+              Colors.white,
+              3,
+                  () {
+                // Open the PDF file on tap
+                Get.to(() => PdfViewer(pdfPath: pdfFile!.path));
+              },
+            );
+          } else {
+            // File is null, handle the case where the PDF generation failed
+            WidgetsHelper.customSnackbar('Failed to generate PDF', 'Please try again', Colors.red, Colors.white, 32,(){});
+          }
+    } catch (err) {
+      log('Error occurred in downloadStatement $err');
+    }
+  }
+
 }

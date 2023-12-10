@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:salary_budget/Data/Core/Utils/app_constants.dart';
 import 'package:salary_budget/Presentation/Screens/Login/login_screen.dart';
 import 'package:salary_budget/Presentation/Widgets/common_widgets/common_widgets.dart';
@@ -17,9 +20,21 @@ class HomeController extends GetxController {
   @override
   void onInit() async {
     super.onInit();
+    requestPermission();
     getUserName();
     greetingsMessage();
     getCurrentMonthName();
+  }
+
+  // Permission request
+  void requestPermission() async {
+    if(await Permission.storage.isDenied){
+      await Permission.storage.request();
+    }else if(await Permission.storage.isPermanentlyDenied){
+      //openAppSettings();
+    }else {
+      log('Permission already done');
+    }
   }
 
   Future<String?> getUserName() async {
