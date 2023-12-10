@@ -26,7 +26,7 @@ class WidgetsHelper {
     );
   }
   // Screen loader
-  static void onLoading(context) {
+  static void onLoading(context,[String? msg]) {
     AlertDialog alertDialog = AlertDialog(
       content: new Row(
         children: <Widget>[
@@ -34,7 +34,7 @@ class WidgetsHelper {
           SizedBox(
             width: 30,
           ),
-          new Text("Please Wait..."),
+          new Text(msg ?? "Please Wait..."),
         ],
       ),
     );

@@ -288,31 +288,35 @@ class ViewRecordController extends GetxController {
 
   // Download Transaction Statement
   void downloadStatement(BuildContext ctx) async {
-    File? pdfFile; // Use File? to denote that pdfFile can be null
+    try {
+      File? pdfFile; // Use File? to denote that pdfFile can be null
 
-    if (selectedRadio.value.isEqual(0) ?? false) {
-      pdfFile = await pdfGeneratorController.generatePDF(ctx,user_number, currentDateMonthController.text,currentDateYearController.text, totalDebitedAmount.value,totalCreditedAmount.value,totalBalance.value,recordList);
-      log('downloaded path ${pdfFile!.path}');
-    } else {
-      pdfFile = await pdfGeneratorController.generatePDF(ctx,user_number, customDateMonthController.text,customDateYearController.text, totalDebitedAmount.value,totalCreditedAmount.value,totalBalance.value,recordList);
-    }
+      if (selectedRadio.value.isEqual(0) ?? false) {
+            pdfFile = await pdfGeneratorController.generatePDF(ctx,user_number, currentDateMonthController.text,currentDateYearController.text, totalDebitedAmount.value,totalCreditedAmount.value,totalBalance.value,recordList);
+            log('downloaded path ${pdfFile!.path}');
+          } else {
+            pdfFile = await pdfGeneratorController.generatePDF(ctx,user_number, customDateMonthController.text,customDateYearController.text, totalDebitedAmount.value,totalCreditedAmount.value,totalBalance.value,recordList);
+          }
 
-    if (pdfFile != null) {
-      // File is not null, proceed with further actions
-      WidgetsHelper.customSnackbar(
-        'File downloaded',
-        'Tap to view',
-        Colors.green,
-        Colors.white,
-        3,
-            () {
-          // Open the PDF file on tap
-          Get.to(() => PdfViewer(pdfPath: pdfFile!.path));
-        },
-      );
-    } else {
-      // File is null, handle the case where the PDF generation failed
-      WidgetsHelper.customSnackbar('Failed to generate PDF', 'Please try again', Colors.red, Colors.white, 32,(){});
+      if (pdfFile != null) {
+            // File is not null, proceed with further actions
+            WidgetsHelper.customSnackbar(
+              'File downloaded',
+              'Tap to view',
+              Colors.green,
+              Colors.white,
+              3,
+                  () {
+                // Open the PDF file on tap
+                Get.to(() => PdfViewer(pdfPath: pdfFile!.path));
+              },
+            );
+          } else {
+            // File is null, handle the case where the PDF generation failed
+            WidgetsHelper.customSnackbar('Failed to generate PDF', 'Please try again', Colors.red, Colors.white, 32,(){});
+          }
+    } catch (err) {
+      log('Error occurred in downloadStatement $err');
     }
   }
 
