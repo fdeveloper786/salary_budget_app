@@ -15,10 +15,12 @@ class UpdateController extends GetxController {
   final amountController = TextEditingController();
   final payStatusController = TextEditingController();
   final remarksController = TextEditingController();
+
   var paymentStatusList = [
     'Fully Paid',
     'Partially Paid',
   ].obs;
+
   var expTypeList = [
     'Credit',
     'Debit',
@@ -31,7 +33,7 @@ class UpdateController extends GetxController {
       if (ViewRecordController.instance.selectedRadio.value == 0) {
         log('selected 0 ');
         await updateRecord(
-            currentYearCollectionNameLbl,
+            expensedDataCollectionLbl,
             ViewRecordController.instance.user_number,
             ViewRecordController.instance.currentDateYearController.text,
             ViewRecordController.instance.currentDateMonthController.text,
@@ -40,7 +42,7 @@ class UpdateController extends GetxController {
       } else {
         log('selected 1');
         await updateRecord(
-            customYearCollectionNameLbl,
+            expensedDataCollectionLbl,
             ViewRecordController.instance.user_number,
             ViewRecordController.instance.customDateYearController.text,
             ViewRecordController.instance.customDateMonthController.text,

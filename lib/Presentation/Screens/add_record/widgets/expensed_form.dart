@@ -355,7 +355,7 @@ import 'package:intl/intl.dart';
 import 'package:salary_budget/Presentation/Screens/add_record/controller/add_record_controller.dart';
 import 'package:salary_budget/Presentation/Widgets/common_widgets/screen_buttons.dart';
 
-class ExpensesForm extends StatelessWidget {
+class ExpensesForm extends StatefulWidget {
   final AddRecordController controller;
   final String collectionName;
   final TextEditingController monthCollectionName;
@@ -385,16 +385,46 @@ class ExpensesForm extends StatelessWidget {
       this.ctx});
 
   @override
+  State<ExpensesForm> createState() => _ExpensesFormState();
+}
+
+class _ExpensesFormState extends State<ExpensesForm> {
+  DateTime? initialDate;
+  DateTime? firstDate;
+
+  DateTime? lastDate;
+
+  int currentYear = DateTime.now().year;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    // if (widget.controller.selectedRadio.value == 0) {
+    //   lastDate = DateTime(
+    //       currentYear, 12, 31); // Set to the last day of the current year
+    //   initialDate =
+    //       DateTime.now().isBefore(lastDate!) ? DateTime.now() : lastDate;
+    //   firstDate = DateTime(currentYear, 1, 1); // Set to the first day of 2024
+    // } else {
+    //   initialDate = DateTime(currentYear - 5);
+    //   firstDate = DateTime(currentYear - 5);
+    //   lastDate = DateTime(currentYear - 1, 12, 31);
+    // }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Obx(() {
       return Visibility(
-        visible: controller.fieldValue.value.isEmpty ? false : true,
+        visible: widget.controller.fieldValue.value.isEmpty ? false : true,
         child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Column(
             children: [
               Form(
-                  key: formKey,
+                  key: widget.formKey,
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
@@ -403,7 +433,7 @@ class ExpensesForm extends StatelessWidget {
                         // Expensed Date
                         TextFormField(
                           keyboardType: TextInputType.datetime,
-                          controller: transDateController,
+                          controller: widget.transDateController,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           readOnly: true,
                           decoration: InputDecoration(
@@ -422,31 +452,57 @@ class ExpensesForm extends StatelessWidget {
                             ),
                           ),
                           onTap: () async {
-                            controller.selectedRadio.value == 0
-                                ? await showDatePicker(
-                                        context: ctx!,
-                                        initialDate: DateTime.now(),
-                                        firstDate: DateTime(2023),
-                                        lastDate: DateTime(2024))
-                                    .then((selectedDate) {
-                                    if (selectedDate != null) {
-                                      transDateController.text =
-                                          DateFormat('dd-MM-yyyy')
-                                              .format(selectedDate);
-                                    }
-                                  })
-                                : await showDatePicker(
-                                        context: ctx!,
-                                        initialDate: DateTime(2018),
-                                        firstDate: DateTime(2018),
-                                        lastDate: DateTime(2022, 12, 31))
-                                    .then((selectedDate) {
-                                    if (selectedDate != null) {
-                                      transDateController.text =
-                                          DateFormat('dd-MM-yyyy')
-                                              .format(selectedDate);
-                                    }
-                                  });
+                            if (widget.controller.selectedRadio.value == 0) {
+                              lastDate = DateTime(currentYear, 12,
+                                  31); // Set to the last day of the current year
+                              initialDate = DateTime.now().isBefore(lastDate!)
+                                  ? DateTime.now()
+                                  : lastDate;
+                              firstDate = DateTime(currentYear, 1,
+                                  1); // Set to the first day of 2024
+                            } else {
+                              initialDate = DateTime(currentYear - 5);
+                              firstDate = DateTime(currentYear - 5);
+                              lastDate = DateTime(currentYear - 1, 12, 31);
+                            }
+                            // widget.controller.selectedRadio.value == 0
+                            //     ? await showDatePicker(
+                            //             context: widget.ctx!,
+                            //             initialDate: DateTime.now(),
+                            //             firstDate: DateTime(currentYear - 1),
+                            //             lastDate: DateTime(currentYear))
+                            //         .then((selectedDate) {
+                            //         if (selectedDate != null) {
+                            //           widget.transDateController.text =
+                            //               DateFormat('dd-MM-yyyy')
+                            //                   .format(selectedDate);
+                            //         }
+                            //       })
+                            //     : await showDatePicker(
+                            //             context: widget.ctx!,
+                            //             initialDate: DateTime(currentYear - 5),
+                            //             firstDate: DateTime(currentYear - 5),
+                            //             lastDate:
+                            //                 DateTime(currentYear - 1, 12, 31))
+                            //         .then((selectedDate) {
+                            //         if (selectedDate != null) {
+                            //           widget.transDateController.text =
+                            //               DateFormat('dd-MM-yyyy')
+                            //                   .format(selectedDate);
+                            //         }
+                            //       });
+                            await showDatePicker(
+                              context: widget.ctx!,
+                              initialDate: initialDate,
+                              firstDate: firstDate!,
+                              lastDate: lastDate!,
+                            ).then((selectedDate) {
+                              if (selectedDate != null) {
+                                widget.transDateController.text =
+                                    DateFormat('dd-MM-yyyy')
+                                        .format(selectedDate);
+                              }
+                            });
                           },
                           /* validator: (value) {
                             if (value!.isEmpty) {
@@ -461,7 +517,7 @@ class ExpensesForm extends StatelessWidget {
                         ), // Expensed Particular
                         TextFormField(
                           keyboardType: TextInputType.text,
-                          controller: transPartController,
+                          controller: widget.transPartController,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           decoration: InputDecoration(
                             labelText: 'Particular',
@@ -490,7 +546,7 @@ class ExpensesForm extends StatelessWidget {
                         ), // Expensed Type
                         TextFormField(
                           keyboardType: TextInputType.text,
-                          controller: transTypeController,
+                          controller: widget.transTypeController,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           readOnly: true,
                           decoration: InputDecoration(
@@ -498,10 +554,10 @@ class ExpensesForm extends StatelessWidget {
                             suffixIcon: PopupMenuButton<String>(
                               icon: const Icon(Icons.arrow_drop_down),
                               onSelected: (String value) {
-                                transTypeController.text = value;
+                                widget.transTypeController.text = value;
                               },
                               itemBuilder: (BuildContext context) {
-                                return controller.expTypeList
+                                return widget.controller.expTypeList
                                     .map<PopupMenuItem<String>>((String value) {
                                   return new PopupMenuItem(
                                       child: new Text(value), value: value);
@@ -534,7 +590,7 @@ class ExpensesForm extends StatelessWidget {
                         // Expensed Amount
                         TextFormField(
                           keyboardType: TextInputType.number,
-                          controller: transAmntController,
+                          controller: widget.transAmntController,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           decoration: InputDecoration(
                             labelText: 'Amount',
@@ -564,7 +620,7 @@ class ExpensesForm extends StatelessWidget {
                         // Payment Status
                         TextFormField(
                           keyboardType: TextInputType.text,
-                          controller: transPayStatusController,
+                          controller: widget.transPayStatusController,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           readOnly: true,
                           decoration: InputDecoration(
@@ -572,10 +628,10 @@ class ExpensesForm extends StatelessWidget {
                             suffixIcon: PopupMenuButton<String>(
                               icon: const Icon(Icons.arrow_drop_down),
                               onSelected: (String value) {
-                                transPayStatusController.text = value;
+                                widget.transPayStatusController.text = value;
                               },
                               itemBuilder: (BuildContext context) {
-                                return controller.paymentStatusList
+                                return widget.controller.paymentStatusList
                                     .map<PopupMenuItem<String>>((String value) {
                                   return new PopupMenuItem(
                                       child: new Text(value), value: value);
@@ -609,7 +665,7 @@ class ExpensesForm extends StatelessWidget {
                         // Payment Date
                         TextFormField(
                           keyboardType: TextInputType.text,
-                          controller: transRemarksController,
+                          controller: widget.transRemarksController,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           readOnly: false,
                           decoration: InputDecoration(
@@ -668,24 +724,24 @@ class ExpensesForm extends StatelessWidget {
                   )),
               Obx(() {
                 return Visibility(
-                  visible: controller.fieldValue.value.isEmpty ? false : true,
+                  visible:
+                      widget.controller.fieldValue.value.isEmpty ? false : true,
                   child: Center(
-                    child:
-                    ScreenButtons(
+                    child: ScreenButtons(
                         btnLabel: "Add Record",
                         onTap: () {
-                          controller.submitRecordForm(
+                          widget.controller.submitRecordForm(
                             context,
-                            collectionName,
-                            monthCollectionName.text,
-                            yearDocName.text,
-                            formKey,
-                            transDateController.text,
-                            transPartController.text,
-                            transTypeController.text,
-                            transAmntController.text,
-                            transPayStatusController.text,
-                            transRemarksController.text,
+                            widget.collectionName,
+                            widget.monthCollectionName.text,
+                            widget.yearDocName.text,
+                            widget.formKey,
+                            widget.transDateController.text,
+                            widget.transPartController.text,
+                            widget.transTypeController.text,
+                            widget.transAmntController.text,
+                            widget.transPayStatusController.text,
+                            widget.transRemarksController.text,
                           );
                         }),
                   ),

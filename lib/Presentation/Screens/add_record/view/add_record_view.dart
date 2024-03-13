@@ -111,7 +111,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
       return addRecordController.selectedRadio.value.isEqual(0)
           ? ExpensesForm(
               controller: addRecordController,
-              collectionName: currentYearCollectionNameLbl,
+              collectionName: expensedDataCollectionLbl,
               monthCollectionName:
                   addRecordController.currentDateMonthController,
               yearDocName: addRecordController.currentDateYearController,
@@ -128,7 +128,7 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
             )
           : ExpensesForm(
               controller: addRecordController,
-              collectionName: customYearCollectionNameLbl,
+              collectionName: expensedDataCollectionLbl,
               monthCollectionName:
                   addRecordController.customDateMonthController,
               yearDocName: addRecordController.customDateYearController,
