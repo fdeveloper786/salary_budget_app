@@ -15,6 +15,7 @@ class UpdateController extends GetxController {
   final amountController = TextEditingController();
   final payStatusController = TextEditingController();
   final remarksController = TextEditingController();
+
   var paymentStatusList = [
     'Fully Paid',
     'Partially Paid',
