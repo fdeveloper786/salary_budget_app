@@ -20,6 +20,7 @@ class UpdateController extends GetxController {
     'Fully Paid',
     'Partially Paid',
   ].obs;
+
   var expTypeList = [
     'Credit',
     'Debit',
