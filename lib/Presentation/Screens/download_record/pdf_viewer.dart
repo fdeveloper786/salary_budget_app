@@ -20,6 +20,7 @@ class _PdfViewerState extends State<PdfViewer> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text('PDF Viewer'),
       ),
       body: PDFView(

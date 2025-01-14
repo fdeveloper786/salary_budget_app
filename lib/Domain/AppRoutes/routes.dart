@@ -42,6 +42,5 @@ class AppRoutes {
     GetPage(name: viewRecordScreen, page: () => ViewRecordScreen(), bindings: [
       ViewRecordScreenBinding(),
     ]),
-
   ];
 }

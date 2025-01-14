@@ -10,7 +10,8 @@ import 'package:salary_budget/Presentation/Widgets/chart/pie_chart.dart';
 import 'package:salary_budget/Presentation/Widgets/common_widgets/screen_buttons.dart';
 
 class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key});
+  final String? userName;
+  HomeScreen({super.key, this.userName});
 
   final homeController = Get.put(HomeController());
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -32,7 +33,7 @@ class HomeScreen extends StatelessWidget {
           title: Obx(() {
             return RichText(
               text: TextSpan(
-                  text: homeController.greetingsMsg.value.toString(),
+                  text: homeController.greetingsMsg.value.toString() == '' ?  userName : homeController.greetingsMsg.value.toString(),
                   style: TextStyle(
                       color: Colors.black,
                       fontWeight: FontWeight.w700,

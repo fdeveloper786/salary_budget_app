@@ -6,7 +6,7 @@ import 'package:salary_budget/Presentation/Screens/HomeScreen/controller/home_co
 import 'package:salary_budget/Presentation/Screens/HomeScreen/home_screen.dart';
 import 'package:salary_budget/Presentation/Screens/Login/login_screen.dart';
 import 'package:salary_budget/Presentation/Widgets/common_widgets/common_widgets.dart';
-import 'package:salary_budget/repository/authenticaion_repository.dart';
+import 'package:salary_budget/repository/authentication_repository.dart';
 
 class OTPController extends GetxController {
   static OTPController get instance => Get.find();

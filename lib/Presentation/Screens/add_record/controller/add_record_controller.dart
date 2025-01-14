@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 import 'package:salary_budget/Data/Core/Utils/app_constants.dart';
 import 'package:salary_budget/Presentation/Widgets/common_widgets/common_widgets.dart';
-import 'package:salary_budget/repository/authenticaion_repository.dart';
+import 'package:salary_budget/repository/authentication_repository.dart';
 import 'dart:developer' as developer;
 
 class AddRecordController extends GetxController {
