@@ -2,22 +2,22 @@
   "project_info": {
     "project_number": "412855408264",
     "project_id": "salary-budget-app",
-    "storage_bucket": "salary-budget-app.appspot.com"
+    "storage_bucket": "salary-budget-app.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:412855408264:android:bf335e2cd12887c168f13d",
+        "mobilesdk_app_id": "1:412855408264:android:630f0bebac48762268f13d",
         "android_client_info": {
-          "package_name": "com.example.salary_budget"
+          "package_name": "com.fdeveloper786.salary_budget"
         }
       },
       "oauth_client": [
         {
-          "client_id": "412855408264-bpvt5dgc7p4bqkc0ieri0n6prcrjb4fj.apps.googleusercontent.com",
+          "client_id": "412855408264-s5j6cfh92klrguk1lefeii23v6o3po59.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.salary_budget",
+            "package_name": "com.fdeveloper786.salary_budget",
             "certificate_hash": "485a00a565bf50c361e6e336e6609ea7245e39ff"
           }
         },
@@ -37,6 +37,13 @@
             {
               "client_id": "412855408264-i0odg3cuffpnadtlm2m13k4kkl7hvb8c.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "412855408264-eeklq3df473qsr5asdahj6s5rreqhqkk.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.salary-budget"
+              }
             }
           ]
         }

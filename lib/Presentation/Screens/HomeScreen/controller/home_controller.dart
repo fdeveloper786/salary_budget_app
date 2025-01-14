@@ -7,7 +7,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:salary_budget/Data/Core/Utils/app_constants.dart';
 import 'package:salary_budget/Presentation/Screens/Login/login_screen.dart';
 import 'package:salary_budget/Presentation/Widgets/common_widgets/common_widgets.dart';
-import 'package:salary_budget/repository/authenticaion_repository.dart';
+import 'package:salary_budget/repository/authentication_repository.dart';
 
 class HomeController extends GetxController {
   static HomeController get instance => Get.find();

@@ -2,6 +2,7 @@ import 'package:custom_gradient_button/custom_gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:pinput/pinput.dart';
 import 'package:salary_budget/Data/Core/Utils/app_constants.dart';
 import 'package:salary_budget/Data/Core/Utils/app_decoration.dart';
 import 'package:salary_budget/Data/Core/Utils/image_utils.dart';
@@ -19,6 +20,7 @@ class LoginScreen extends StatelessWidget with InputValidationMixin {
   final loginFormGlobalKey = GlobalKey<FormState>();
   late final SharedPreferences prefs;
   dynamic setLogs;
+  var code = "";
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +54,7 @@ class LoginScreen extends StatelessWidget with InputValidationMixin {
                       height: 10,
                     ),
                     TextFormField(
-                      controller: loginController.phoneController,
+                      controller: loginController.mobileController,
                       keyboardType: TextInputType.phone,
                       autofocus: true,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -85,13 +87,37 @@ class LoginScreen extends StatelessWidget with InputValidationMixin {
                         }
                       },
                     ),
+                    const SizedBox(height: 16),
+                    if (loginController.isOtpFieldVisible.value)
+                      Pinput(
+                        length: 6,
+                        showCursor: true,
+                        controller: loginController.otpController,
+                        focusNode: loginController.otpFocusNode,
+                        //autofocus: true,
+                        keyboardType: TextInputType.number,
+                        validator: (otpValue) {
+                          if (otpValue!.isEmpty) {
+                            return emptyErrorLbl;
+                          } else if (otpValue.length < 6) {
+                            return otpDigitErrorLbl;
+                          } else {
+                            isValidateOtp(otpValue);
+                          }
+                          return null;
+                        },
+                        onChanged: (value) {
+                          code = value;
+                        },
+                      ),
+                    const SizedBox(height: 16),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: Align(
                         alignment: Alignment.bottomCenter,
                         child: CustomGradientButton(
-                          child: const Text(
-                            loginLbl,
+                          child:  Text(
+                            loginController.isOtpFieldVisible.value ? loginLbl : getOTP ,
                             style: AppStyle.txtWhite20,
                           ),
                           firstColor: Colors.greenAccent,
@@ -99,7 +125,15 @@ class LoginScreen extends StatelessWidget with InputValidationMixin {
                           height: 40.0,
                           width: 150.0,
                           method: () async {
-                            if (loginFormGlobalKey.currentState!.validate()) {
+                            if (loginController.isOtpFieldVisible.value) {
+                              loginController.navigateToScreen(context);
+                            } else {
+                              if (loginFormGlobalKey.currentState!.validate()) {
+                                loginFormGlobalKey.currentState!.save();
+                                loginController.validateField();
+                              }
+                            }
+                           /* if (loginFormGlobalKey.currentState!.validate()) {
                               loginFormGlobalKey.currentState!.save();
                               loginController.phoneAuthentication("+91" +
                                   loginController.phoneController.text.trim());
@@ -111,7 +145,7 @@ class LoginScreen extends StatelessWidget with InputValidationMixin {
                               });
                             } else {
                               print("else part in login");
-                            }
+                            }*/
                           },
                         ),
                       ),
