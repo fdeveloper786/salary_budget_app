@@ -50,7 +50,16 @@ class HomeScreen extends StatelessWidget {
                   ]),
             );
           }),
-          actions: [
+          leading:  IconButton(
+              onPressed: () {
+                homeController.userLoggedOut(context);
+              },
+              icon: Icon(
+                Icons.logout_rounded,
+                color: Colors.black,
+                size: 25,
+              )),
+          /*actions: [
             IconButton(
                 onPressed: () {
                   homeController.userLoggedOut(context);
@@ -60,7 +69,7 @@ class HomeScreen extends StatelessWidget {
                   color: Colors.black,
                   size: 25,
                 ))
-          ],
+          ],*/
         ),
         body: SingleChildScrollView(
           child: Container(

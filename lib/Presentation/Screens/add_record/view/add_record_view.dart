@@ -1,14 +1,10 @@
-import 'package:custom_gradient_button/custom_gradient_button.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:salary_budget/Data/Core/Utils/app_constants.dart';
-import 'package:salary_budget/Data/Core/Utils/app_decoration.dart';
 import 'package:salary_budget/Presentation/Screens/add_record/controller/add_record_controller.dart';
 import 'package:salary_budget/Presentation/Screens/add_record/widgets/current_income_calender.dart';
 import 'package:salary_budget/Presentation/Screens/add_record/widgets/expensed_form.dart';
 import 'package:salary_budget/Presentation/Screens/add_record/widgets/previous_income_calender.dart';
-import 'package:salary_budget/Presentation/Widgets/common_widgets/screen_buttons.dart';
 
 class AddRecordScreen extends StatefulWidget {
   AddRecordScreen({super.key});
@@ -25,8 +21,10 @@ class _AddRecordScreenState extends State<AddRecordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
         appBar: AppBar(
           title: Text('Add Record'),
+          backgroundColor: Colors.white,
         ),
         body: Stack(
           children: [

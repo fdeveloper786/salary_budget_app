@@ -200,8 +200,7 @@ class ViewRecordController extends GetxController {
             transRemarks: data['remarks'],
           ));
 
-          double expensedAmount =
-              double.parse(data['amount'].replaceAll(',', ''));
+          double expensedAmount = parseAmount(data['amount']);
           if (data['transaction_type'] == 'Debit') {
             debitedAmounts.add(expensedAmount);
             totalDebitedAmount.value = totalDebitedMethod(debitedAmounts);
@@ -219,10 +218,28 @@ class ViewRecordController extends GetxController {
         recordList.sort((a, b) => a.transDate!.compareTo(b.transDate!));
         isLoading.value = false;
       }
+      isLoading.value = false;
     } catch (e) {
       developer.log('---catch logs${e}');
     }
     return recordList;
+  }
+
+  double parseAmount(String? amount) {
+    try {
+      if (amount == null || amount.isEmpty) {
+        throw FormatException('Amount is null or empty');
+      }
+
+      // Remove commas and other non-numeric characters except '.'
+      String sanitizedAmount = amount.replaceAll(RegExp(r'[^\d.]'), '');
+
+      // Parse the sanitized string into a double
+      return double.parse(sanitizedAmount);
+    } catch (e) {
+      print('Error parsing amount: $e');
+      return 0.0; // Default to 0.0 if parsing fails
+    }
   }
 
   totalDebitedMethod(List<double> debitedAmount) {
@@ -236,6 +253,7 @@ class ViewRecordController extends GetxController {
   totalCreditedMethod(List<double> creditedAmount) {
     double totalCredited = 0.00;
     for (double amount in creditedAmount) {
+      log("Credited ${amount}");
       totalCredited += amount;
     }
     return totalCredited;
