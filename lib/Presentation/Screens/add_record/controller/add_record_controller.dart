@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -94,7 +93,7 @@ class AddRecordController extends GetxController {
   void onInit() async {
     super.onInit();
     user_number = await AuthenticationRepository.instance.loggedUserName();
-    generateYearList(5);
+    generateYearList(10);
     print('year list ${yearList[4]}');
     currentDateYearController.text = currentYear.toString();
     currentDateMonthController.text = monthName.toString();

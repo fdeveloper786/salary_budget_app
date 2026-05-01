@@ -7,6 +7,7 @@ import 'package:salary_budget/Presentation/Screens/Otp_Screen/binding/otp_bindin
 import 'package:salary_budget/Presentation/Screens/Otp_Screen/otp_validation_screen.dart';
 import 'package:salary_budget/Presentation/Screens/add_record/binding/add_record_binding.dart';
 import 'package:salary_budget/Presentation/Screens/add_record/view/add_record_view.dart';
+import 'package:salary_budget/Presentation/Screens/dashboard/dashboard.dart';
 import 'package:salary_budget/Presentation/Screens/view_record/binding/view_record_binding.dart';
 import 'package:salary_budget/Presentation/Screens/view_record/view/view_record_screen.dart';
 
@@ -17,6 +18,8 @@ class AppRoutes {
 
   static const String otpValidationScreen = "/otp_validation_screen";
 
+  static const String dashboard = "/dashboard";
+
   static const String homeScreen = "/home_screen";
 
   static const String addRecordScreen = '/add_record_view';
@@ -24,6 +27,10 @@ class AppRoutes {
   static const String viewRecordScreen = '/view_record_screen';
 
   static List<GetPage> pages = [
+    GetPage(name: dashboard, page: () => Dashboard(), bindings: [
+      LoginBinding(),
+    ]),
+
     GetPage(name: loginScreen, page: () => LoginScreen(), bindings: [
       LoginBinding(),
     ]),

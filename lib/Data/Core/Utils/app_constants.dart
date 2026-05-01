@@ -59,6 +59,7 @@ const String currentYearCollectionNameLbl = 'current_year_income_data';
 const String customYearCollectionNameLbl = 'custom_year_income_data';
 const String expensedDataCollectionLbl = 'expenses_data';
 const String expensedLbl = 'Expensed';
+const String expensesDataCollectionLbl = 'expenses';
 
 const String totalDebitedLbl = 'Total Debited   :\t';
 const String totalCreditedLbl = 'Total Credited  :\t';

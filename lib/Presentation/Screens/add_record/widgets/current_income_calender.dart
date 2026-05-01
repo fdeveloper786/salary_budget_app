@@ -119,6 +119,7 @@ class CurrentIncomeCalendar extends StatelessWidget {
                               currentDateController.currentSalaryController,
                           autovalidateMode: AutovalidateMode.onUserInteraction,
                           enabled: true,
+                          maxLength: 6,
                           decoration: InputDecoration(
                             labelText: 'Enter month income',
                             suffixIcon: Padding(
@@ -160,6 +161,8 @@ class CurrentIncomeCalendar extends StatelessWidget {
                           validator: (value) {
                             if (value!.isEmpty) {
                               return 'Please enter your income';
+                            } if(value.length > 6){
+                              return 'Please enter less than 6 digit income';
                             }
                             return null;
                           },

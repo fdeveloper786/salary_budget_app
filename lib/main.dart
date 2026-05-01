@@ -62,7 +62,7 @@ class _MyAppState extends State<MyApp> {
         useMaterial3: true,
       ),
       initialBinding: InitialBindings(),
-      initialRoute: isLoggedIn! ? AppRoutes.homeScreen : AppRoutes.initialRoute,
+      initialRoute: isLoggedIn! ? AppRoutes.dashboard : AppRoutes.initialRoute,
       getPages: AppRoutes.pages,
     );
   }

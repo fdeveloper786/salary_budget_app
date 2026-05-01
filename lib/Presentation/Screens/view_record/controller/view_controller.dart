@@ -12,10 +12,11 @@ import 'package:salary_budget/Presentation/Widgets/common_widgets/common_widgets
 import 'package:salary_budget/repository/authenticaion_repository.dart';
 import 'dart:developer' as developer;
 
+enum TransactionFilter { all, debit, credit }
+
 class ViewRecordController extends GetxController {
   static ViewRecordController get instance => Get.find();
-  PDFGeneratorController pdfGeneratorController =
-      Get.put(PDFGeneratorController());
+  PDFGeneratorController pdfGeneratorController = Get.put(PDFGeneratorController());
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   var fieldValue = "".obs;
@@ -34,6 +35,8 @@ class ViewRecordController extends GetxController {
   var totalDebitedAmount = 0.00.obs;
   var totalCreditedAmount = 0.00.obs;
   var totalBalance = 0.00.obs;
+  var selectedFilter = TransactionFilter.all.obs;
+  var searchQuery = ''.obs;
 
   var monthList = [
     'Jan',
@@ -73,17 +76,19 @@ class ViewRecordController extends GetxController {
   RxList<Map<String, dynamic>> firestoreData = RxList<Map<String, dynamic>>();
   RxList<dynamic> docIdData = RxList<dynamic>();
   List<ViewRecordTileModel> recordList = <ViewRecordTileModel>[].obs;
+  List<ViewRecordTileModel> filteredList = [];
+  String searchText = '';
 
   @override
   void onInit() async {
     super.onInit();
     user_number = await AuthenticationRepository.instance.loggedUserName();
     generateYearList(5);
-    print('year list ${yearList[4]}');
     currentDateYearController.text = currentYear.toString();
     currentDateMonthController.text = monthName.toString();
     checkExistingMonthlyIncome(
         currentDateMonthController.text, currentDateYearController.text);
+    debugPrint("list length ${recordList.length}");
   }
 
   void generateYearList(int numberOfYears) {
@@ -200,8 +205,7 @@ class ViewRecordController extends GetxController {
             transRemarks: data['remarks'],
           ));
 
-          double expensedAmount =
-              double.parse(data['amount'].replaceAll(',', ''));
+          double expensedAmount = parseAmount(data['amount']);
           if (data['transaction_type'] == 'Debit') {
             debitedAmounts.add(expensedAmount);
             totalDebitedAmount.value = totalDebitedMethod(debitedAmounts);
@@ -217,12 +221,31 @@ class ViewRecordController extends GetxController {
         }
         // Sort recordList based on transDate
         recordList.sort((a, b) => a.transDate!.compareTo(b.transDate!));
+        applyFilters();
         isLoading.value = false;
       }
+      isLoading.value = false;
     } catch (e) {
       developer.log('---catch logs${e}');
     }
     return recordList;
+  }
+
+  double parseAmount(String? amount) {
+    try {
+      if (amount == null || amount.isEmpty) {
+        throw FormatException('Amount is null or empty');
+      }
+
+      // Remove commas and other non-numeric characters except '.'
+      String sanitizedAmount = amount.replaceAll(RegExp(r'[^\d.]'), '');
+
+      // Parse the sanitized string into a double
+      return double.parse(sanitizedAmount);
+    } catch (e) {
+      print('Error parsing amount: $e');
+      return 0.0; // Default to 0.0 if parsing fails
+    }
   }
 
   totalDebitedMethod(List<double> debitedAmount) {
@@ -236,6 +259,7 @@ class ViewRecordController extends GetxController {
   totalCreditedMethod(List<double> creditedAmount) {
     double totalCredited = 0.00;
     for (double amount in creditedAmount) {
+      log("Credited ${amount}");
       totalCredited += amount;
     }
     return totalCredited;
@@ -353,4 +377,67 @@ class ViewRecordController extends GetxController {
       log('Error occurred in downloadStatement $err');
     }
   }
+
+  /// filtered list
+/*  List<ViewRecordTileModel> get filteredList {
+    //recordList.clear();
+    return recordList.where((item) {
+      // FILTER BY TYPE
+      final matchesFilter =
+      selectedFilter.value == TransactionFilter.all
+          ? true
+          : item.transType ==
+          (selectedFilter.value == TransactionFilter.debit
+              ? 'Debit'
+              : 'Credit');
+
+      // FILTER BY SEARCH
+      final query = searchQuery.value.toLowerCase();
+      final matchesSearch = query.isEmpty ||
+          (item.transParticular?.toLowerCase().contains(query) ?? false) ||
+          (item.transAmount?.toString().contains(query) ?? false);
+
+      return matchesFilter && matchesSearch;
+    }).toList();
+  }*/
+
+  void applyFilters() {
+    filteredList = recordList.where((item) {
+      // FILTER BY CHIP
+      if (selectedFilter.value == TransactionFilter.debit &&
+          item.transType != 'Debit') {
+        return false;
+      }
+
+      if (selectedFilter.value == TransactionFilter.credit &&
+          item.transType != 'Credit') {
+        return false;
+      }
+
+      // FILTER BY SEARCH
+      if (searchText.isEmpty) return true;
+
+      final name = item.transParticular?.toLowerCase() ?? '';
+      final amount = item.transAmount?.toString() ?? '';
+
+      return name.contains(searchText.toLowerCase()) ||
+          amount.contains(searchText);
+    }).toList();
+
+    update(); // 🔥 REQUIRED for GetBuilder
+  }
+
+
+  void setFilter(TransactionFilter filter) {
+    selectedFilter.value = filter;
+    applyFilters();
+  }
+
+  void setSearch(String value) {
+    searchText = value.trim();
+    applyFilters();
+  }
+
+
+
 }

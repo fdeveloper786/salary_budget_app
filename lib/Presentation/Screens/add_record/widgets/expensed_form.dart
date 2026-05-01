@@ -348,7 +348,7 @@ class ExpensesForm extends StatelessWidget {
   }
 }
 */
-
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -413,6 +413,8 @@ class _ExpensesFormState extends State<ExpensesForm> {
     //   lastDate = DateTime(currentYear - 1, 12, 31);
     // }
   }
+  String? selectedExpType;
+  String? selectedPayStatus;
 
   @override
   Widget build(BuildContext context) {
@@ -504,12 +506,12 @@ class _ExpensesFormState extends State<ExpensesForm> {
                               }
                             });
                           },
-                          /* validator: (value) {
+                           validator: (value) {
                             if (value!.isEmpty) {
                               return 'Please enter your Transaction Date!';
                             }
                             return null;
-                          },*/
+                          },
                           onChanged: (value) {},
                         ),
                         const SizedBox(
@@ -533,56 +535,48 @@ class _ExpensesFormState extends State<ExpensesForm> {
                               ),
                             ),
                           ),
-                          /* validator: (value) {
+                          maxLength: 20,
+                           validator: (value) {
                             if (value!.isEmpty) {
                               return 'Please enter your particular';
                             }
                             return null;
-                          },*/
-                          onChanged: (value) {},
+                          },
+                          onChanged: (value) {
+                            print('text length ${value.length}');
+                          },
                         ),
-                        const SizedBox(
-                          height: 10,
-                        ), // Expensed Type
-                        TextFormField(
-                          keyboardType: TextInputType.text,
-                          controller: widget.transTypeController,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          readOnly: true,
+                        // Expense Type Dropdown
+                        DropdownButtonFormField2<String>(
                           decoration: InputDecoration(
-                            labelText: 'Transaction Type',
-                            suffixIcon: PopupMenuButton<String>(
-                              icon: const Icon(Icons.arrow_drop_down),
-                              onSelected: (String value) {
-                                widget.transTypeController.text = value;
-                              },
-                              itemBuilder: (BuildContext context) {
-                                return widget.controller.expTypeList
-                                    .map<PopupMenuItem<String>>((String value) {
-                                  return new PopupMenuItem(
-                                      child: new Text(value), value: value);
-                                }).toList();
-                              },
+                            labelText: 'Expense Type',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
                             contentPadding:
-                                EdgeInsets.symmetric(horizontal: 10),
-                            border: OutlineInputBorder(
-                              borderRadius: const BorderRadius.all(
-                                const Radius.circular(10.0),
-                              ),
-                              borderSide: BorderSide(
-                                width: 1,
-                                style: BorderStyle.none,
-                              ),
-                            ),
+                            const EdgeInsets.symmetric(horizontal: 10),
                           ),
-                          /*validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please enter your Transaction Type!';
+                          isExpanded: true,
+                          value: selectedExpType,
+                          hint: const Text('Select Expense Type'),
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          items: widget.controller.expTypeList
+                              .map((type) => DropdownMenuItem<String>(
+                            value: type,
+                            child: Text(type),
+                          ))
+                              .toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              selectedExpType = value;
+                            });
+                          },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please select an expense type.';
                             }
                             return null;
-                          },*/
-                          onChanged: (value) {},
+                          },
                         ),
                         const SizedBox(
                           height: 10,
@@ -606,59 +600,49 @@ class _ExpensesFormState extends State<ExpensesForm> {
                               ),
                             ),
                           ),
-                          /*validator: (value) {
+                          maxLength: 6,
+                          validator: (value) {
                             if (value!.isEmpty) {
                               return 'Please enter your amount!';
+                            } if(value.length > 6) {
+                              return 'Please enter less than 6 digit';
                             }
                             return null;
-                          },*/
+                          },
                           onChanged: (value) {},
-                        ),
-                        const SizedBox(
-                          height: 10,
                         ),
                         // Payment Status
-                        TextFormField(
-                          keyboardType: TextInputType.text,
-                          controller: widget.transPayStatusController,
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          readOnly: true,
+                        DropdownButtonFormField2<String>(
                           decoration: InputDecoration(
                             labelText: 'Payment Status',
-                            suffixIcon: PopupMenuButton<String>(
-                              icon: const Icon(Icons.arrow_drop_down),
-                              onSelected: (String value) {
-                                widget.transPayStatusController.text = value;
-                              },
-                              itemBuilder: (BuildContext context) {
-                                return widget.controller.paymentStatusList
-                                    .map<PopupMenuItem<String>>((String value) {
-                                  return new PopupMenuItem(
-                                      child: new Text(value), value: value);
-                                }).toList();
-                              },
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
                             ),
                             contentPadding:
-                                EdgeInsets.symmetric(horizontal: 10),
-                            border: OutlineInputBorder(
-                              borderRadius: const BorderRadius.all(
-                                const Radius.circular(10.0),
-                              ),
-                              borderSide: BorderSide(
-                                width: 1,
-                                style: BorderStyle.none,
-                              ),
-                            ),
+                            const EdgeInsets.symmetric(horizontal: 10),
                           ),
-                          /*validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please enter your payment status!';
+                          isExpanded: true,
+                          value: selectedPayStatus,
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
+                          hint: const Text('Select Payment Status'),
+                          items: widget.controller.paymentStatusList
+                              .map((status) => DropdownMenuItem<String>(
+                            value: status,
+                            child: Text(status),
+                          ))
+                              .toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              selectedPayStatus = value;
+                            });
+                          },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please select a payment status.';
                             }
                             return null;
-                          },*/
-                          onChanged: (value) {},
+                          },
                         ),
-
                         const SizedBox(
                           height: 10,
                         ),
@@ -683,40 +667,7 @@ class _ExpensesFormState extends State<ExpensesForm> {
                               ),
                             ),
                           ),
-                          /* onTap: () async {
-                            controller.selectedRadio.value == 0
-                                ? await showDatePicker(
-                                context: ctx!,
-                                initialDate: DateTime.now(),
-                                firstDate: DateTime(2023),
-                                lastDate: DateTime(2024))
-                                .then((selectedDate) {
-                              if (selectedDate != null) {
-                                expPayDateController.text =
-                                    DateFormat('dd-MM-yyyy')
-                                        .format(selectedDate);
-                              }
-                            })
-                                : await showDatePicker(
-                                context: ctx!,
-                                initialDate: DateTime(2018),
-                                firstDate: DateTime(2018),
-                                lastDate: DateTime(2022))
-                                .then((selectedDate) {
-                              if (selectedDate != null) {
-                                expPayDateController.text =
-                                    DateFormat('dd-MM-yyyy')
-                                        .format(selectedDate);
-                              }
-                            });
-                          },
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please enter your payment date!';
-                            }
-                            return null;
-                          },
-                          onChanged: (value) {},*/
+                          maxLength: 50,
                         ),
                         SizedBox(height: 16),
                       ],
@@ -738,9 +689,9 @@ class _ExpensesFormState extends State<ExpensesForm> {
                             widget.formKey,
                             widget.transDateController.text,
                             widget.transPartController.text,
-                            widget.transTypeController.text,
+                            selectedExpType,
                             widget.transAmntController.text,
-                            widget.transPayStatusController.text,
+                            selectedPayStatus,
                             widget.transRemarksController.text,
                           );
                         }),
