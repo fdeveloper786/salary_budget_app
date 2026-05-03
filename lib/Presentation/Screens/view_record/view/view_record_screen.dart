@@ -102,129 +102,152 @@ class ViewRecordScreen extends StatelessWidget {
   }
 
   Widget dataTable(BuildContext screenContext) {
-    return Obx(() {
-      return Visibility(
-        visible: viewRecordController.isIncomeNull.value,
-        child: viewRecordController.isLoading.value ?
-            Center(child: CircularProgressIndicator(),)
-        :
-        SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: (viewRecordController.recordList.length == 0)
-                ? Center(
-                    child: Text('No record added.Firstly add the record.'),
-                  )
-                : DataTable(
-                    columnSpacing: 20.0,
-                    columns: <DataColumn>[
-                      DataColumn(
-                        label: Text('Date'),
-                      ),
-                      DataColumn(
-                        label: Text('Particulars'),
-                      ),
-                      DataColumn(
-                        label: Text('Type'),
-                      ),
-                      DataColumn(
-                        label: Text('Amount'),
-                      ),
-                      DataColumn(
-                        label: Text('Status'),
-                      ),
-                      DataColumn(
-                        label: Text('Remarks'),
-                      ),
-                      DataColumn(
-                        label: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text('Update'),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            Text('Delete'),
-                          ],
+      log("lineNo 106 ${viewRecordController.recordList.length} ${viewRecordController.isLoading.value}");
+      return Obx(() {
+        if(viewRecordController.isLoading.value) {
+          return const Padding(
+            padding: EdgeInsets.symmetric(vertical: 30),
+            child: Center(child: CircularProgressIndicator(),),
+          );
+        }
+        bool noIncome = !viewRecordController.isIncomeNull.value;
+        bool noRecords = viewRecordController.recordList.isEmpty;
+
+        if (noIncome || noRecords) {
+          return Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Center(
+              child: Column(
+                children: [
+                  const Icon(Icons.info_outline, size: 50, color: Colors.grey),
+                  const SizedBox(height: 10),
+                  Text(
+                    noIncome
+                        ? 'Please add income for this period first.'
+                        : 'No records found for this period.',
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+        return Visibility(
+          visible: viewRecordController.isIncomeNull.value,
+          child:
+          SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: DataTable(
+                columnSpacing: 20.0,
+                columns: <DataColumn>[
+                  DataColumn(
+                    label: Text('Date'),
+                  ),
+                  DataColumn(
+                    label: Text('Particulars'),
+                  ),
+                  DataColumn(
+                    label: Text('Type'),
+                  ),
+                  DataColumn(
+                    label: Text('Amount'),
+                  ),
+                  DataColumn(
+                    label: Text('Status'),
+                  ),
+                  DataColumn(
+                    label: Text('Remarks'),
+                  ),
+                  DataColumn(
+                    label: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('Update'),
+                        SizedBox(
+                          width: 20,
                         ),
-                      ),
-                    ],
-                    rows: viewRecordController.recordList.map((data) {
-                      return DataRow(cells: <DataCell>[
-                        DataCell(
-                          Text(data.transDate.toString()),
+                        Text('Delete'),
+                      ],
+                    ),
+                  ),
+                ],
+                rows: viewRecordController.recordList.map((data) {
+                  return DataRow(cells: <DataCell>[
+                    DataCell(
+                      Text(data.transDate.toString()),
+                    ),
+                    DataCell(Text(data.transParticular.toString())),
+                    DataCell(Text(data.transType.toString())),
+                    DataCell(Text(data.transAmount!.formatRupees())),
+                    DataCell(Text(data.transStatus.toString())),
+                    DataCell(Text(data.transRemarks.toString())),
+                    DataCell(Row(
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            log('updated ${viewRecordController.selectedRadio.value}');
+                            Navigator.of(screenContext).push(
+                                MaterialPageRoute(
+                                    builder: (screenContext) =>
+                                        UpdateRecord(
+                                            viewRecordController:
+                                            viewRecordController,
+                                            recordId: data.docId,
+                                            trDate:
+                                            data.transDate.toString(),
+                                            particular:
+                                            data.transParticular,
+                                            transType: data.transType,
+                                            amount: data.transAmount,
+                                            status: data.transStatus,
+                                            remarks: data.transRemarks)));
+                          },
+                          icon: Icon(
+                            Icons.edit,
+                            color: Colors.blue,
+                          ),
                         ),
-                        DataCell(Text(data.transParticular.toString())),
-                        DataCell(Text(data.transType.toString())),
-                        DataCell(Text(data.transAmount!.formatRupees())),
-                        DataCell(Text(data.transStatus.toString())),
-                        DataCell(Text(data.transRemarks.toString())),
-                        DataCell(Row(
-                          children: [
-                            IconButton(
-                              onPressed: () {
-                                log('updated ${viewRecordController.selectedRadio.value}');
-                                Navigator.of(screenContext).push(
-                                    MaterialPageRoute(
-                                        builder: (screenContext) =>
-                                            UpdateRecord(
-                                                viewRecordController:
-                                                    viewRecordController,
-                                                recordId: data.docId,
-                                                trDate:
-                                                    data.transDate.toString(),
-                                                particular:
-                                                    data.transParticular,
-                                                transType: data.transType,
-                                                amount: data.transAmount,
-                                                status: data.transStatus,
-                                                remarks: data.transRemarks)));
-                              },
-                              icon: Icon(
-                                Icons.edit,
-                                color: Colors.blue,
-                              ),
-                            ),
-                            IconButton(
-                              onPressed: () {
-                                log('deleted');
-                                /*viewRecordController.confirmToDeleteRecord(
+                        IconButton(
+                          onPressed: () {
+                            log('deleted');
+                            /*viewRecordController.confirmToDeleteRecord(
                                     screenContext, data.docId!);*/
-                                showDialog(
-                                    context: screenContext,
-                                    builder: (BuildContext context) {
-                                      return AlertDialog(
-                                        title: Text('Confirm Deletion'),
-                                        content: Text(
-                                            'Are you sure want to delete this record?'),
-                                        actions: [
-                                          TextButton(
-                                              onPressed: () =>
-                                                  Navigator.of(context).pop(),
-                                              child: Text('Cancel')),
-                                          TextButton(
-                                              onPressed: () {
-                                                Navigator.of(context).pop();
-                                                viewRecordController
-                                                    .confirmToDeleteRecord(
-                                                        screenContext,
-                                                        data.docId!);
-                                              },
-                                              child: Text('Delete'))
-                                        ],
-                                      );
-                                    });
-                              },
-                              icon: Icon(
-                                Icons.delete,
-                                color: Colors.red,
-                              ),
-                            ),
-                          ],
-                        )),
-                      ]);
-                    }).toList(),
-                  )),
-      );
-    });
+                            showDialog(
+                                context: screenContext,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text('Confirm Deletion'),
+                                    content: Text(
+                                        'Are you sure want to delete this record?'),
+                                    actions: [
+                                      TextButton(
+                                          onPressed: () =>
+                                              Navigator.of(context).pop(),
+                                          child: Text('Cancel')),
+                                      TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                            viewRecordController
+                                                .confirmToDeleteRecord(
+                                                screenContext,
+                                                data.docId!);
+                                          },
+                                          child: Text('Delete'))
+                                    ],
+                                  );
+                                });
+                          },
+                          icon: Icon(
+                            Icons.delete,
+                            color: Colors.red,
+                          ),
+                        ),
+                      ],
+                    )),
+                  ]);
+                }).toList(),
+              )),
+        );
+      });
   }
 }

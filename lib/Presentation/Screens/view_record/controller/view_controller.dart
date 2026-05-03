@@ -49,14 +49,6 @@ class ViewRecordController extends GetxController {
     'Nov',
     'Dec',
   ].obs;
-  /*var yearList = [
-    '2018',
-    '2019',
-    '2020',
-    '2021',
-    '2022',
-  ].obs;
-*/
   RxList<String> yearList = <String>[].obs;
 
   String user_number = '';
@@ -217,8 +209,8 @@ class ViewRecordController extends GetxController {
         }
         // Sort recordList based on transDate
         recordList.sort((a, b) => a.transDate!.compareTo(b.transDate!));
-        isLoading.value = false;
       }
+      isLoading.value = false;
     } catch (e) {
       developer.log('---catch logs${e}');
     }
