@@ -3,6 +3,7 @@ const String isLoggedLbl = "isLogged";
 
 const indianRupeeSymbol = '\u20B9';
 const String loginLbl = 'Login';
+const String getOTP = 'Get OTP';
 const String enterMobileNumberLbl = "Enter Mobile Number";
 const String emptyErrorLbl = 'Please enter mobile number';
 const String mobileNumberDigitErrorLbl =
@@ -10,6 +11,7 @@ const String mobileNumberDigitErrorLbl =
 const String mobileNumberDigitError2Lbl =
     "Mobile Number must be 10 digit long.";
 const String startWithNumberLbl = "Please enter valid phone number";
+const String otpDigitErrorLbl = "OTP must be 6 digit long.";
 
 // -------- OTP Validation -------- //
 const String otpValidationLbl = "Validate OTP";
@@ -63,5 +65,18 @@ const String expensedLbl = 'Expensed';
 const String totalDebitedLbl = 'Total Debited   :\t';
 const String totalCreditedLbl = 'Total Credited  :\t';
 const String totalBalanceLbl = 'Total Balance  \t:\t\t';
+const String statementOfMonthLbl = 'Statement of the month';
+const String inrLbl = "INR";
+const String statementTitleLbl = "Expenses Transaction Statement";
+const String downloadWaitLbl = "Downloading,please wait";
+const String ddMMyyHHmmLbl = 'dd MMM yyyy HH:mm';
 
 const String androidPathLbl = '/storage/emulated/0/Download';
+
+// -------- Data Table Label ------- //
+const String dateLbl = 'Date';
+const String particularLbl = 'Particular';
+const String amountLbl = 'Amount';
+const String transactionTypeLbl = 'Type';
+const String statusLbl = 'Status';
+const String remarksLbl = 'Remarks';

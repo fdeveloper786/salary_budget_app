@@ -26,6 +26,7 @@ class AuthenticationRepository extends GetxController {
   // OTP Login
   Future<void> phoneAuthentication(String mobileNumber) async {
     phoneNumber.value = mobileNumber.substring(3);
+    print("EX 42 ${phoneNumber.value}");
     await FirebaseAuth.instance.verifyPhoneNumber(
       phoneNumber: mobileNumber,
       verificationCompleted: (credential) async {
@@ -38,12 +39,13 @@ class AuthenticationRepository extends GetxController {
         this.verificationId.value = verificationId;
       },
       verificationFailed: (e) {
+        print("EX 42 ${e.message} ${e.code}");
         if (e.code == invalidPhoneNumberLbl) {
-          Get.snackbar(errorLbl, invalidNumberLbl);
-          Get.to(() => LoginScreen());
+          Get.snackbar(errorLbl, invalidNumberLbl,duration: Duration(seconds: 10));
+         // Get.to(() => LoginScreen());
         } else {
-          Get.snackbar(errorLbl, somethingWentWrongLbl);
-          Get.to(() => LoginScreen());
+          Get.snackbar(errorLbl, somethingWentWrongLbl,duration: Duration(seconds: 10));
+         // Get.to(() => LoginScreen());
         }
       },
     );

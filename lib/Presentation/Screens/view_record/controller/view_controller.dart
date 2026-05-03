@@ -9,7 +9,7 @@ import 'package:salary_budget/Presentation/Screens/view_record/view/view_record_
 import 'package:salary_budget/Presentation/Screens/download_record/download_record_controller.dart';
 import 'package:salary_budget/Presentation/Screens/download_record/pdf_viewer.dart';
 import 'package:salary_budget/Presentation/Widgets/common_widgets/common_widgets.dart';
-import 'package:salary_budget/repository/authenticaion_repository.dart';
+import 'package:salary_budget/repository/authentication_repository.dart';
 import 'dart:developer' as developer;
 
 class ViewRecordController extends GetxController {
@@ -49,14 +49,6 @@ class ViewRecordController extends GetxController {
     'Nov',
     'Dec',
   ].obs;
-  /*var yearList = [
-    '2018',
-    '2019',
-    '2020',
-    '2021',
-    '2022',
-  ].obs;
-*/
   RxList<String> yearList = <String>[].obs;
 
   String user_number = '';
@@ -78,7 +70,7 @@ class ViewRecordController extends GetxController {
   void onInit() async {
     super.onInit();
     user_number = await AuthenticationRepository.instance.loggedUserName();
-    generateYearList(5);
+    generateYearList(10);
     print('year list ${yearList[4]}');
     currentDateYearController.text = currentYear.toString();
     currentDateMonthController.text = monthName.toString();
@@ -217,8 +209,8 @@ class ViewRecordController extends GetxController {
         }
         // Sort recordList based on transDate
         recordList.sort((a, b) => a.transDate!.compareTo(b.transDate!));
-        isLoading.value = false;
       }
+      isLoading.value = false;
     } catch (e) {
       developer.log('---catch logs${e}');
     }
